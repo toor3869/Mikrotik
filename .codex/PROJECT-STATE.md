@@ -6,6 +6,29 @@
 
 ## État actuel
 
+- Essai demandé : séparateur de 100 tirets au-dessus de tous les sous-titres, une ligne vide
+  avant le titre, couleur identique. Aucun Markdown ni changement des opérations ; rendu Winbox
+  à valider avant de figer ce choix. Préparation locale non publiée.
+
+- Revue locale de tous les chemins d'affichage : espacements des confirmations, reprises,
+  annulations, erreurs de saisie et rotation Cloud complétés ; aucun changement fonctionnel.
+  Cadres et transitions nominales contrôlés avec les sorties utilisateur. Les parcours
+  secondaires restent non validés en natif ; corrections visuelles toujours non publiées.
+
+- Espacement repris sur la sortie utilisateur : une ligne dans les étapes, deux avant leurs
+  titres ; suppressions des séparateurs cumulés après inventaire et intervalle. Ligne ajoutée
+  après l'envoi Cloud et après le test du script. Changements visuels locaux non publiés.
+  L'utilisateur confirme maintenant la fin de l'installation 32cdb2d : Cloud vérifié, test réussi,
+  scheduler actif, nettoyage effectué et sortie normale sans compteur parasite.
+  Les cadres finaux locaux respectent une ligne intérieure et deux extérieures ; test dédié ajouté.
+
+- Deux lignes blanches des avertissements du mot de passe passées en orange, avec reset ANSI
+  individuel. Consignes et prompts inchangés ; correction locale non publiée.
+
+- Essai utilisateur : mot de passe trop court refusé avec message rouge et nouvelle saisie ;
+  saisie valide puis confirmation acceptées, passage à la première sauvegarde Cloud.
+  Ce contrôle est validé ; l'installation était encore en cours sur la capture fournie.
+
 - Choix 9 validé par l'utilisateur et sa capture avec 7ddf121 : Cloud, scheduler, script et
   installateur supprimés, sortie normale sans erreur ni compteur parasite. Ciblage par identifiant
   fonctionnel dans ce parcours ; rotation du mot de passe toujours à tester séparément.
@@ -43,7 +66,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Quarante-deux tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
+- Quarante-six tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.

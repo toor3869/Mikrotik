@@ -81,6 +81,8 @@ class Contracts(unittest.TestCase):
                                 r':put \1;', self.installer)
         # Les contrats fonctionnels ignorent le double espacement visuel.
         self.installer = re.sub(r'(?m)^( *:put "";\n)\1', r'\1', self.installer)
+        # Le cadre des sous-titres est teste separement sur le texte brut.
+        self.installer = re.sub(r'(?m)^ *:put "-{100}";\n *:put "";\n', '', self.installer)
         pattern = r'^    :local runtimeSource \( \\\n(.*?)^    \);$'
         matches = re.findall(pattern, self.installer, re.M | re.S)
         self.assertEqual(len(matches), 1)
@@ -246,17 +248,29 @@ class Contracts(unittest.TestCase):
         self.assertIn('\\1B[33m- La sauvegarde presente sur le cloud MikroTik.\\1B[0m',
                       self.colored_installer)
 
+    def test_password_warning_paragraphs_have_uniform_color(self):
+        for message in (
+            'Ce mot de passe protege votre sauvegarde chiffree.',
+            'Conservez-le : il sera necessaire pour la restaurer.',
+            'Il sera enregistre en clair dans le script installe sur ce MikroTik.',
+            'Vous pourrez le retrouver dans la variable backupPassword.',
+            'Les utilisateurs autorises a lire le script pourront aussi le consulter.',
+        ):
+            self.assertIn(':put "\\1B[33m' + message + '\\1B[0m";', self.colored_installer)
+
     def test_console_double_spacing(self):
         lines = self.colored_installer.splitlines()
         for index, line in enumerate(lines):
             if ':put "' in line and '----- ' in line:
                 self.assertEqual(lines[index - 1].strip(), ':put "";')
+                self.assertIn('-' * 100, lines[index - 2])
+                self.assertEqual(lines[index - 3].strip(), ':put "";')
                 if 'terminee -----' not in line:
-                    self.assertEqual(lines[index - 2].strip(), ':put "";')
+                    self.assertEqual(lines[index - 4].strip(), ':put "";')
                 else:
-                    self.assertIn('#' * 100, lines[index - 2])
+                    self.assertIn('#' * 100, lines[index - 4])
                 self.assertEqual(lines[index + 1].strip(), ':put "";')
-                self.assertEqual(lines[index + 2].strip(), ':put "";')
+                self.assertNotEqual(lines[index + 2].strip(), ':put "";')
 
     def test_uninstall_spacing_after_confirmation_and_cloud(self):
         self.assertIn('} else={\n                        :put "";\n'
@@ -264,6 +278,16 @@ class Contracts(unittest.TestCase):
                       self.colored_installer)
         self.assertIn('remove-file number=($backups->0);\n                                :put "";',
                       self.colored_installer)
+
+    def test_installation_spacing_without_accumulation(self):
+        self.assertIn(':put ("Sauvegarde sur le cloud   : " . $backupState);\n'
+                      '                        :local scriptId;', self.installer)
+        self.assertNotIn(':put "";\n                            };\n'
+                         '                            :local timeValue', self.installer)
+        self.assertIn(':put "";\n                                :set stage '
+                      '"verification premiere sauvegarde";', self.installer)
+        self.assertIn('/system script run $scriptName;\n                            :put "";',
+                      self.installer)
 
     def test_planning_independent_retry_loops(self):
         code = self.code
@@ -449,7 +473,7 @@ class Contracts(unittest.TestCase):
         self.assertLess(action, enable)
         self.assertLess(enable, check)
         self.assertLess(check, success)
-        self.assertLess(success, block.index('} else={ :put "Planning modifie.'))
+        self.assertLess(success, block.index(':put "Planning modifie.'))
         self.assertIn('($mode != "2") || ($wasDisabled = false)', block[:title])
 
     def test_planning_mode_no_cloud_or_secret_changes(self):
@@ -618,6 +642,30 @@ class Contracts(unittest.TestCase):
             self.assertGreater(len(assignments), 4)
             for value in assignments:
                 self.assertRegex(value, r'^"[^"$]*";$')
+
+    def test_spacing_in_alternative_paths(self):
+        code = self.installer
+        self.assertIn(':if ($invalid) do={\n                :put "";', code)
+        self.assertIn(':if ([:len $value] < 8) do={\n                    :put "";', code)
+        self.assertIn(':put "";\n                                    :local confirmation', code)
+        self.assertIn(':if ($required != "") do={\n                            :put "";', code)
+        self.assertIn('remove-file number=($backups->0);\n                                    :put "";', code)
+        self.assertIn(':put "";\n                        :put "Sortie sans nettoyage.', code)
+        self.assertNotRegex(self.colored_installer,
+                            r'(?m)^ *:put "";\n *:put "";\n *:put "";')
+
+    def test_final_frames_have_single_inner_spacing(self):
+        lines = self.colored_installer.splitlines()
+        for title in ('Installation terminee', 'Desinstallation terminee'):
+            index = next(i for i, line in enumerate(lines) if '----- ' + title + ' -----' in line)
+            start = max(i for i in range(index) if '#' * 100 in lines[i])
+            end = next(i for i in range(index + 1, len(lines)) if '#' * 100 in lines[i])
+            inner = [line.strip() for line in lines[start + 1:end]]
+            self.assertEqual(inner[0], ':put "";')
+            self.assertEqual(inner[-1], ':put "";')
+            self.assertFalse(any(a == b == ':put "";' for a, b in zip(inner, inner[1:])))
+            self.assertEqual([line.strip() for line in lines[start - 2:start]], [':put "";'] * 2)
+            self.assertEqual([line.strip() for line in lines[end + 1:end + 3]], [':put "";'] * 2)
 
     def test_final_summary_after_successful_cleanup(self):
         code = self.code

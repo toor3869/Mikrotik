@@ -9,6 +9,16 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Revue des espacements des parcours secondaires : confirmations, mots de passe invalides,
+  rotation Cloud, planning conservé désactivé, reprises et annulations. Suppression d'un
+  séparateur cumulé sur le parcours d'annulation ; opérations et garde-fous inchangés.
+
+- Espacement console : suppression des cumuls entre inventaire, horaires et mot de passe,
+  une ligne entre paragraphes et après les retours Cloud d'installation et de test.
+
+- Avertissements du bloc mot de passe uniformément colorés, sans lignes blanches au milieu
+  des paragraphes orange ; consignes et saisies conservées dans leur style normal.
+
 - Suppression Cloud : ciblage par l'identifiant de l'objet déjà trouvé et reconnu, au lieu du
   numéro littéral 0, pour la désinstallation et la rotation du mot de passe. À valider sur RouterOS.
 - Désinstallation : diagnostic séparé de la commande Cloud et de sa vérification, catégories
@@ -22,6 +32,16 @@ VERSION 2026-09-18 - BY TOOR3869
   sans `return 0` global ; erreurs réelles conservées. Confirmation native encore à réaliser.
 
 ### Modifié
+
+- Essai visuel : ligne horizontale de tirets au-dessus de chaque sous-titre, dans sa couleur,
+  séparée du titre par une ligne vide ; aucun marqueur Markdown affiché dans RouterOS.
+
+- Parcours complet d'installation confirmé par la sortie utilisateur, sans compteur parasite
+  ni erreur finale ; TODO actualisé. Espacement intérieur des deux cadres finaux couvert
+  explicitement par un test sur les commandes d'affichage non normalisées.
+
+- TODO : refus d'un mot de passe trop court et reprise locale de la saisie validés par
+  l'essai utilisateur ; autres cas invalides conservés à tester.
 
 - Espacement des cadres finaux resserré à une ligne près des bordures ; ajout d'une ligne
   après OUI et après le retour de suppression Cloud. Désinstallation validée par l'essai

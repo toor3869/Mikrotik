@@ -2,15 +2,15 @@
 
 ## À valider
 
+- [ ] Valider dans Winbox l'essai de ligne horizontale au-dessus de tous les sous-titres.
 - [ ] Vérifier le dernier ajustement visuel : une ligne vide à l'intérieur des bordures du cadre,
-      une après OUI et une après le retour de suppression Cloud.
+      une après OUI et les retours Cloud ; aucun cumul entre inventaire, horaires et mot de passe.
+- [ ] Vérifier les espacements des confirmations, reprises, erreurs et annulations lors des
+      essais des parcours secondaires ci-dessous.
 - [ ] Vérifier les sorties après choix 0 et annulation : absence de « Script Error: 0 ».
-- [ ] Vérifier le rendu des erreurs rouges et des saisies de mot de passe avec les couleurs.
-- [ ] Vérifier un parcours complet avec la dernière correction des comptages silencieux,
-      y compris le test du script permanent ; ne pas confondre tests locaux et exécution RouterOS.
 - [ ] Tester Échap sur les deux saisies de mot de passe : accès direct au menu d'interruption,
       sans message d'échec ni prompt intermédiaire de réessai.
-- [ ] Tester les saisies de mot de passe invalides : vide, trop court, trop long, non-ASCII
+- [ ] Tester les saisies de mot de passe invalides : vide, trop long, non-ASCII
       et confirmation différente ; vérifier Retour arrière, collage, expiration et Ctrl+C.
 - [ ] Tester les saisies horaires personnalisées et invalides : limites 00:00:00/23:59:59,
       intervalle nul ou supérieur à 1d, acceptation de 1d et maintien de l'heure déjà validée.

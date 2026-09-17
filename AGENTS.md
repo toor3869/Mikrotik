@@ -88,6 +88,10 @@ ftp \
 - Échapper correctement guillemets, antislashs et dollars à chaque couche, sans double encodage.
   Ne jamais remplacer globalement les `\n` applicatifs, notamment ceux des messages.
 - Une relecture API ne suffit pas à certifier le rendu visuel de l'éditeur Winbox.
+- Pour l'affichage de l'installateur : une ligne vide entre les parties d'une étape, deux entre
+  les étapes. Ne pas cumuler les séparateurs de fin et de début de deux étapes successives.
+  Dans les cadres finaux, conserver une seule ligne vide près des bordures et entre paragraphes,
+  deux à l'extérieur. Tester les vrais `:put` avant toute normalisation du texte par les tests.
 
 ## Installation, commentaires et sécurité
 

@@ -111,6 +111,7 @@
                     };
                 };
             };
+            :if (($value = "0") && ($invalid = false)) do={ :return ""; };
             :if ($invalid) do={
                 :put "";
                 :put "\1B[31mMot de passe invalide. Utilisez 8 a 128 caracteres ASCII imprimables.\1B[0m";
@@ -506,7 +507,7 @@
                                 :put "\1B[36m------------------------------------------------\1B[0m";
                                 :put "";
                                 :put "Appuyez sur Entree pour conserver les valeurs proposees entre crochets.";
-                                :put "Sinon, saisissez vos propres valeurs.";
+                                :put "Sinon, saisissez vos propres valeurs. Tapez 0 puis Entree pour annuler.";
                                 :put "";
                                 :put "Heure de depart : utilisez le format HH:MM:SS sur 24 heures.";
                                 :put "Exemples : 00:00:00 pour minuit, 05:30:00 pour 5 h 30.";
@@ -514,6 +515,10 @@
                                 :local hourAccepted false;
                                 :while ($hourAccepted = false) do={
                                     :local answer [/terminal ask prompt=("Heure de depart [" . $startTime . "] : ")];
+                                    :if ($answer = "0") do={
+                                        :set cancelled true;
+                                        :error "Saisie annulee";
+                                    };
                                     :local candidate $answer;
                                     :if ($candidate = "") do={ :set candidate $startTime; };
                                     :do {
@@ -543,6 +548,10 @@
                                 :local intervalAccepted false;
                                 :while ($intervalAccepted = false) do={
                                     :local answer [/terminal ask prompt=("Intervalle entre les sauvegardes [" . $interval . "] : ")];
+                                    :if ($answer = "0") do={
+                                        :set cancelled true;
+                                        :error "Saisie annulee";
+                                    };
                                     :local candidate $answer;
                                     :if ($candidate = "") do={ :set candidate $interval; };
                                     :do {
@@ -589,7 +598,7 @@
                                 :put "\1B[33mLes utilisateurs autorises a lire le script pourront aussi le consulter.\1B[0m";
                                 :put "";
                                 :put "Utilisez entre 8 et 128 caracteres ASCII imprimables.";
-                                :put "La saisie est invisible. Appuyez sur Echap pour annuler.";
+                                :put "La saisie est invisible. Tapez 0 puis Entree pour annuler.";
                                 :put "";
                                 :local passwordsMatch false;
                                 :while ($passwordsMatch = false) do={
@@ -851,17 +860,17 @@
                         } else={ :put "Aucune mutation de configuration effectuee."; };
                         :if ($cancelled = false) do={
                             :put "";
-                            :put "Appuyez sur Entree pour une nouvelle tentative.";
-                            :put "Appuyez sur Echap pour quitter.";
+                            :put "Entree : nouvelle tentative. 0 puis Entree : quitter.";
                             :local answered false;
                             :do {
                                 :while ($answered = false) do={
-                                    :local key [/terminal inkey timeout=2m];
-                                    :if ([:typeof $key] != "num") do={ :set answered true; } else={
-                                        :if (($key < 0) || ($key = 27) || ($key = 3)) do={ :set answered true; };
-                                        :if (($key = 13) || ($key = 10)) do={
-                                            :set answered true;
-                                            :set retry true;
+                                    :local answer [/terminal ask prompt="Votre choix [Entree] : "];
+                                    :if ($answer = "") do={
+                                        :set answered true;
+                                        :set retry true;
+                                    } else={
+                                        :if ($answer = "0") do={ :set answered true; } else={
+                                            :put "Choix invalide. Entree pour reprendre ou 0 pour quitter.";
                                         };
                                     };
                                 };
@@ -885,33 +894,14 @@
                     :put "0 - Quitter en conservant les elements existants";
                     :put "9 - Desinstaller et nettoyer, sauvegarde Cloud comprise";
                     :put "";
-                    :put "Votre choix [0] :";
                     :local exitChoice "";
                     :local choiceDone false;
                     :do {
                         :while ($choiceDone = false) do={
-                            :local key [/terminal inkey timeout=2m];
-                            :if ([:typeof $key] != "num") do={
-                                :set exitChoice "";
+                            :set exitChoice [/terminal ask prompt="Votre choix [0] : "];
+                            :if (($exitChoice = "") || ($exitChoice = "0") || ($exitChoice = "9")) do={
                                 :set choiceDone true;
-                            } else={
-                                :if (($key < 0) || ($key = 27) || ($key = 3)) do={
-                                    :set exitChoice "";
-                                    :set choiceDone true;
-                                } else={
-                                    :if (($key = 13) || ($key = 10)) do={
-                                        :set choiceDone true;
-                                    } else={
-                                        :if (($key = 8) || ($key = 127)) do={
-                                            :set exitChoice "";
-                                        } else={
-                                            :if (($key = 57) && ($exitChoice = "")) do={
-                                                :set exitChoice "9";
-                                            } else={ :set exitChoice "0"; };
-                                        };
-                                    };
-                                };
-                            };
+                            } else={ :put "Choix invalide. Tapez 0 ou 9 puis Entree."; };
                         };
                     } on-error={ :set exitChoice ""; };
                     :if ($exitChoice = "9") do={

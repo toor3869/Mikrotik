@@ -9,6 +9,9 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Annulation explicite par `0` puis Entrée pour les horaires et les deux saisies de mot de
+  passe. Menus de reprise et de sortie unifiés avec `terminal ask`, sans dépendre d'Échap.
+  Annulation sans suppression automatique ; valeurs vides du planning conservées.
 - Heure et intervalle du récapitulatif final affichés en vert comme les autres résultats.
 
 - Ligne vide entre la confirmation du mot de passe et les avertissements de rotation ou
@@ -43,7 +46,8 @@ VERSION 2026-09-18 - BY TOOR3869
   l'utilisateur et planning conservé. Point retiré du TODO ; restauration encore à tester.
 
 - Bannière de début en console fermée à droite et textes centrés sur 100 caractères ;
-  bannières des fichiers source inchangées.
+  bannières des fichiers source inchangées. Rendu validé dans Winbox par l'utilisateur ;
+  contrôle retiré du TODO.
 
 - Sous-titres encadrés par deux lignes de tirets ajustées à leur largeur, sans ligne vide
   intérieure, conformément à l'exemple visuel ; couleurs conservées. Rendu validé par

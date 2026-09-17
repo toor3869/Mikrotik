@@ -6,11 +6,18 @@
 
 ## État actuel
 
+- Test utilisateur : Échap sans effet dans le menu et les horaires du choix 2. Correction
+  locale : 0 puis Entrée annule les horaires et les deux saisies de mot de passe ; menus de
+  reprise/sortie via terminal ask. Annulation avant mutation des saisies, sans nettoyage
+  implicite. Entrée conserve le planning proposé ; un mot de passe vide reste refusé.
+  48 tests statiques ; nouveaux parcours d'annulation à valider dans Winbox après publication.
+
 - Récapitulatif final : heure et intervalle passés en vert, rappel du mot de passe conservé
   en orange. Correction locale uniquement ; rendu à confirmer après publication.
 
 - Bannière de début console centrée et fermée à droite sur 100 caractères, avec cinq `#`
-  de chaque côté ; sources inchangées dans leur présentation. Rendu Winbox à valider.
+  de chaque côté ; sources inchangées dans leur présentation. Rendu Winbox validé par
+  l'utilisateur et sa capture de la version 5e1c499 ; contrôle retiré du TODO.
 
 - Choix 3 validé par la sortie complète et la confirmation utilisateur : suppression/recréation
   Cloud après EFFACER, test réussi, scheduler actif et installateur supprimé, sortie normale.
@@ -84,7 +91,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Quarante-sept tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
+- Quarante-huit tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.
@@ -93,7 +100,7 @@
   Bloc horaires/intervalle intégré : boucles indépendantes de saisie, exceptions de conversion
   traitées, valeurs proposées conservées sur Entrée, intervalle dans ]0,1d]. Tests natifs à faire.
   Bloc mot de passe intégré : reprises locales après longueur/caractère invalide, double saisie
-  reprise après différence. Échap/Ctrl+C/expiration annulent. Aucun mot de passe affiché.
+  reprise après différence. 0 puis Entrée annule ; aucun mot de passe affiché.
   Une saisie trop longue est consommée jusqu'à Entrée puis entièrement refusée, jamais tronquée
   en mot de passe accepté ; comportement de collage et touches à vérifier en natif.
 - Confirmation OUI retirée ; seules les confirmations de remplacement/suppression d'une
@@ -102,7 +109,7 @@
   Suppressions vérifiées, reprise partielle possible ; essai RouterOS encore nécessaire.
 - Après abandon, proposition 0/9 : sortie sans nettoyage par défaut, 9 puis Entrée redispatche
   vers le même bloc de désinstallation, avec nouvel inventaire et confirmation OUI.
-  Pas de suppression sur Échap ; tests de touches à réaliser en natif.
+  Pas de suppression implicite ; tests de saisie à réaliser en natif.
 - Revue globale appliquée : annulation de mot de passe distincte d'une panne, verrou détenu
   jusqu'à la sortie finale, nettoyage commun, motifs explicites sans erreur native affichée.
   Désinstallation : inventaire relu après confirmation et objets revérifiés avant suppression.
@@ -156,7 +163,7 @@
 ## Travail réalisé
 
 - Reprise locale après erreur : Entrée refait l'inventaire, réutilise les saisies validées et
-  conserve le Cloud déjà vérifié si ses métadonnées concordent. Échap rejoint le menu de sortie,
+  conserve le Cloud déjà vérifié si ses métadonnées concordent. 0 rejoint le menu de sortie,
   sans nettoyage par défaut ; choix 9 explicite et confirmation OUI pour désinstaller.
   Traitement d'erreur limité au scheduler reconnu, avec nouvelle recherche et contrôle d'arrêt.
   Vérification des jobs avant et après désactivation ; aucun job interrompu automatiquement.

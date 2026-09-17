@@ -499,8 +499,8 @@ class Contracts(unittest.TestCase):
         self.assertIn('0 - Quitter en conservant les elements existants', proposal)
         self.assertIn('9 - Desinstaller et nettoyer, sauvegarde Cloud comprise', proposal)
         self.assertIn(':local exitChoice "";', proposal)
-        self.assertIn('($key = 13) || ($key = 10)', proposal)
-        self.assertIn('($key < 0) || ($key = 27) || ($key = 3)', proposal)
+        self.assertIn(':set exitChoice [/terminal ask prompt="Votre choix [0] : "];', proposal)
+        self.assertIn('($exitChoice = "") || ($exitChoice = "0") || ($exitChoice = "9")', proposal)
         self.assertIn('on-error={ :set exitChoice ""; }', proposal)
         gate = proposal.index(':if ($exitChoice = "9")')
         self.assertIn(':set mode "9";', proposal[gate:])
@@ -535,8 +535,8 @@ class Contracts(unittest.TestCase):
         self.assertLess(failure.index('get $scheduleId comment'), failure.index('/system scheduler disable'))
         self.assertLess(failure.index('get $scheduleId on-event'), failure.index('/system scheduler disable'))
         self.assertIn('get $scheduleId disabled', failure)
-        self.assertIn('($key = 13) || ($key = 10)', failure)
-        self.assertIn('($key < 0) || ($key = 27) || ($key = 3)', failure)
+        self.assertIn(':local answer [/terminal ask prompt="Votre choix [Entree] : "];', failure)
+        self.assertIn(':if ($answer = "0") do={ :set answered true; }', failure)
         self.assertIn(':set retry true;', failure)
         self.assertNotIn('/system backup cloud remove-file', failure)
         self.assertLess(failure.index(':set retry true;'), failure.index(':set password "";'))
@@ -624,7 +624,8 @@ class Contracts(unittest.TestCase):
         failure = code.split(':if ($failed) do={', 1)[1].split(':set password "";', 1)[0]
         self.assertEqual(failure.count(':if ($cancelled = false) do={'), 2)
         self.assertLess(failure.index(':if ($cancelled = false)'), failure.index('----- Echec'))
-        self.assertLess(failure.rindex(':if ($cancelled = false)'), failure.index('Appuyez sur Entree'))
+        self.assertLess(failure.rindex(':if ($cancelled = false)'),
+                        failure.index('Entree : nouvelle tentative.'))
 
     def test_uninstall_revalidates_after_prompt_and_before_removal(self):
         code = self.uninstall
@@ -657,6 +658,19 @@ class Contracts(unittest.TestCase):
             index = next(i for i, line in enumerate(lines) if message in line)
             self.assertEqual(lines[index - 1].strip(), ':put "";')
             self.assertNotEqual(lines[index - 2].strip(), ':put "";')
+
+    def test_zero_cancellation_before_validation_and_mutation(self):
+        code = self.installer
+        guard = ':if (($value = "0") && ($invalid = false)) do={ :return ""; };'
+        self.assertIn(guard, code)
+        self.assertLess(code.index(guard), code.index(':if ([:len $value] < 8)'))
+        for prompt in ('Heure de depart [', 'Intervalle entre les sauvegardes ['):
+            block = code.split(':local answer [/terminal ask prompt=("' + prompt, 1)[1]
+            before_validation = block.split(':local candidate $answer;', 1)[0]
+            self.assertIn(':if ($answer = "0")', before_validation)
+            self.assertIn(':set cancelled true;', before_validation)
+            self.assertIn(':error "Saisie annulee";', before_validation)
+        self.assertNotIn('Appuyez sur Echap', code)
 
     def test_spacing_in_alternative_paths(self):
         code = self.installer

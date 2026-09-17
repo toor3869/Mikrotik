@@ -123,16 +123,20 @@ Le choix 9 peut être relancé pour traiter les éléments restants. Aucun job n
 
 **Annuler**
 
-Échap, Ctrl+C ou expiration reçus pendant la saisie du mot de passe conduisent au menu
-d'interruption. Un refus de confirmation de remplacement ou suppression y conduit également.
+Tapez **0 puis Entrée** pendant la saisie de l'heure, de l'intervalle ou du mot de passe
+pour rejoindre le menu d'interruption. Seul le mot de passe exact `0` annule ; les mots de
+passe contenant des zéros restent acceptés. Une saisie vide conserve le planning proposé,
+mais n'autorise jamais un mot de passe vide. Ne pas compter sur Échap dans Winbox.
+Un refus de remplacement rejoint aussi ce menu ; un refus de désinstallation quitte sans agir.
 
-- **0, Entrée ou Échap** : quitter sans nettoyage.
+- **0 puis Entrée, ou Entrée seule** : quitter sans nettoyage.
 - **9 puis Entrée** : proposer la désinstallation, avec confirmation `OUI` obligatoire.
 
 **Reprendre après une erreur**
 
-Entrée relance un inventaire et une tentative ; Échap rejoint le menu d'interruption.
-L'attente expire après deux minutes sans touche.
+Entrée relance un inventaire et une tentative ; **0 puis Entrée** rejoint le menu d'interruption.
+Ces menus attendent une réponse explicite ; la saisie invisible du mot de passe conserve son
+délai de deux minutes sans touche. Aucune annulation ne supprime automatiquement des éléments.
 
 Les paramètres validés sont conservés. Une sauvegarde déjà vérifiée dans la session est
 réutilisée si son nom, son état, sa date et sa taille concordent encore. Sinon, les confirmations

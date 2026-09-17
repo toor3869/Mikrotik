@@ -116,6 +116,9 @@ ftp \
   correspondante. Une préparation locale ne constitue pas une validation en production.
 - Dans l'installateur Cloud, distinguer une annulation de saisie d'un échec technique :
   l'annulation rejoint le menu de sortie, sans imposer le prompt de nouvelle tentative.
+- Utiliser `0` puis Entrée comme annulation explicite des saisies et des reprises ; ne pas
+  promettre Échap avec `terminal ask`. Pour un mot de passe, seul `0` exact annule, jamais
+  un zéro inclus dans une valeur plus longue. Ne jamais déclencher de nettoyage implicitement.
 - Conserver le verrou pendant toute la session, menus de reprise et nettoyage compris ;
   ne le libérer que sur une sortie finale contrôlée. Documenter séparément l'arrêt forcé.
 - Réutiliser la routine de nettoyage ciblée pour installation et désinstallation. Après un prompt

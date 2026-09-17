@@ -9,9 +9,11 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Suppression Cloud : ciblage par l'identifiant de l'objet déjà trouvé et reconnu, au lieu du
+  numéro littéral 0, pour la désinstallation et la rotation du mot de passe. À valider sur RouterOS.
 - Désinstallation : diagnostic séparé de la commande Cloud et de sa vérification, catégories
   d'erreur sans affichage du message natif et attente bornée de dix secondes pour constater
-  l'absence. Le slot officiel `number=0` est conservé ; cause de l'échec terrain non confirmée.
+  l'absence. L'essai terrain a ensuite isolé un refus de cible ou d'argument par `remove-file`.
 - Couleur jaune appliquée aussi à la ligne annonçant la suppression de la sauvegarde Cloud.
 
 - Comptages de tâches silencieux dans l'installateur et le script permanent : suppression

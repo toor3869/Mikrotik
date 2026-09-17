@@ -235,7 +235,9 @@ class Contracts(unittest.TestCase):
     def test_cloud_deletion_diagnostics(self):
         code = self.uninstall
         self.assertIn(':if ([:onerror cloudError in={', code)
-        self.assertEqual(code.count('/system backup cloud remove-file number=0;'), 1)
+        self.assertEqual(code.count('/system backup cloud remove-file number=($backups->0);'), 1)
+        self.assertNotIn('remove-file number=0', self.installer)
+        self.assertEqual(self.installer.count('remove-file number=($backups->0);'), 2)
         self.assertIn('commande de suppression Cloud', code)
         self.assertIn('verification apres suppression Cloud', code)
         self.assertIn('$cloudChecks < 10', code)

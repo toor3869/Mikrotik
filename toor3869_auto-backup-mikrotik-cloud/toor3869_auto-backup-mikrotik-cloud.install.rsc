@@ -309,12 +309,12 @@
                             :if ([/system backup cloud get ($backups->0) name] != $backupName) do={
                                 :error "Sauvegarde Cloud etrangere";
                             };
-                            # number est le slot Cloud gratuit, pas un numero de console.
+                            # Cibler l'identifiant retourne par find, apres verification du nom.
                             :set uninstallStage "commande de suppression Cloud";
                             :set uninstallReason "La commande remove-file a echoue (erreur non classee).";
                             :put "Suppression de la sauvegarde Cloud. Merci de patienter.";
                             :if ([:onerror cloudError in={
-                                /system backup cloud remove-file number=0;
+                                /system backup cloud remove-file number=($backups->0);
                             } do={
                                 # Ne jamais afficher le message natif : il peut contenir un secret.
                                 :if ($cloudError ~ "[Pp]ermission|not allowed|[Dd]enied") do={
@@ -687,7 +687,7 @@
                                     :put "";
                                 };
                                 :if (($mode = "3") && ([:len $backups] = 1)) do={
-                                    /system backup cloud remove-file number=0;
+                                    /system backup cloud remove-file number=($backups->0);
                                     :if ([:len [/system backup cloud find]] != 0) do={ :error "Suppression non confirmee"; };
                                     :set backups [/system backup cloud find];
                                 };

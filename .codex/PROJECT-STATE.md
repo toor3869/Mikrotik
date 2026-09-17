@@ -8,9 +8,11 @@
 
 - Dernier choix 9 en échec : MCP confirme une sauvegarde Cloud présente et un scheduler Cloud
   désactivé. Aucun nouvel effacement déclenché par l'agent. Cause native non connue.
-  Documentation officielle vérifiée : `number=0` est le slot gratuit, pas un numéro de console.
-  Diagnostic de suppression détaillé et vérification bornée à dix secondes préparés pour
-  publication ; ligne d'avertissement Cloud colorée. Prochain essai manuel du choix 9.
+  Nouvel essai : remove-file lui-même refuse la cible ou l'argument, avant la vérification.
+  La documentation Cloud montre number=0, mais ce cas rencontre une dépendance possible à la
+  numérotation de session. Les deux suppressions utilisent maintenant l'identifiant trouvé et
+  vérifié, sans afficher la liste Cloud ni sa clé. Correction à valider en natif, pas encore prouvée.
+  Diagnostic détaillé et attente bornée conservés. Aucun appel de suppression via MCP.
 
 - TODO réconcilié avec les sorties console fournies : parcours initial avec valeurs par défaut,
   double saisie valide, première sauvegarde, remplacement de test, activation et nettoyage réussis.

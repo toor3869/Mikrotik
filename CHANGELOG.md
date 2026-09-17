@@ -23,6 +23,10 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- Espacement des cadres finaux resserré à une ligne près des bordures ; ajout d'une ligne
+  après OUI et après le retour de suppression Cloud. Désinstallation validée par l'essai
+  utilisateur sur RB2011 avec la version 7ddf121, sans erreur finale ni compteur parasite.
+
 - TODO réconcilié avec les essais utilisateur : installation initiale, remplacement de test,
   activation et nettoyage réussis ; suppression Cloud/script/scheduler confirmée au choix 9.
   Les contrôles restants ciblent les dernières corrections, les variantes et les échecs.

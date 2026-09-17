@@ -257,6 +257,7 @@
                     :if ([/terminal ask prompt="Confirmer avec OUI : "] != "OUI") do={
                         :put "Desinstallation annulee. Aucune modification.";
                     } else={
+                        :put "";
                         :set uninstallStage "desactivation scheduler";
                         :set uninstallReason "Etat modifie ou verification impossible depuis la confirmation.";
                         # Refaire l'inventaire apres le prompt ; aucun identifiant ancien n'est reutilise.
@@ -315,6 +316,7 @@
                             :put "Suppression de la sauvegarde Cloud. Merci de patienter.";
                             :if ([:onerror cloudError in={
                                 /system backup cloud remove-file number=($backups->0);
+                                :put "";
                             } do={
                                 # Ne jamais afficher le message natif : il peut contenir un secret.
                                 :if ($cloudError ~ "[Pp]ermission|not allowed|[Dd]enied") do={
@@ -381,12 +383,10 @@
                         :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";
-                        :put "";
                         :put "\1B[36m----- Desinstallation terminee -----\1B[0m";
                         :put "";
                         :put "";
                         :put "\1B[32mScript, scheduler, sauvegarde Cloud et fichier d'installation supprimes.\1B[0m";
-                        :put "";
                         :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";
@@ -922,7 +922,6 @@
                         :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";
-                        :put "";
                         :put "\1B[36m----- Installation terminee -----\1B[0m";
                         :put "";
                         :put "";
@@ -934,7 +933,6 @@
                         :put "";
                         :put "";
                         :put "\1B[33mConservez votre mot de passe pour pouvoir restaurer la sauvegarde.\1B[0m";
-                        :put "";
                         :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";

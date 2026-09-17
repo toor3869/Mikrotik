@@ -251,9 +251,19 @@ class Contracts(unittest.TestCase):
         for index, line in enumerate(lines):
             if ':put "' in line and '----- ' in line:
                 self.assertEqual(lines[index - 1].strip(), ':put "";')
-                self.assertEqual(lines[index - 2].strip(), ':put "";')
+                if 'terminee -----' not in line:
+                    self.assertEqual(lines[index - 2].strip(), ':put "";')
+                else:
+                    self.assertIn('#' * 100, lines[index - 2])
                 self.assertEqual(lines[index + 1].strip(), ':put "";')
                 self.assertEqual(lines[index + 2].strip(), ':put "";')
+
+    def test_uninstall_spacing_after_confirmation_and_cloud(self):
+        self.assertIn('} else={\n                        :put "";\n'
+                      '                        :set uninstallStage "desactivation scheduler";',
+                      self.colored_installer)
+        self.assertIn('remove-file number=($backups->0);\n                                :put "";',
+                      self.colored_installer)
 
     def test_planning_independent_retry_loops(self):
         code = self.code

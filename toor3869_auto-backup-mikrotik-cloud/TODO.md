@@ -2,12 +2,10 @@
 
 ## À valider
 
-- [ ] Rejouer le choix 9 après l'échec Cloud : relever l'étape et la catégorie si l'échec
-      persiste ; valider la suppression et la sortie normale avec cette nouvelle version.
-- [ ] Vérifier dans Winbox les couleurs, le double espacement et le nouveau libellé du choix 1 ;
-      confirmer le retour au style normal et la lisibilité des saisies.
-- [ ] Vérifier les sorties après choix 0, annulation et succès du choix 9 : absence de
-      « Script Error: 0 » ; confirmer aussi l'absence des compteurs parasites 0/1.
+- [ ] Vérifier le dernier ajustement visuel : une ligne vide à l'intérieur des bordures du cadre,
+      une après OUI et une après le retour de suppression Cloud.
+- [ ] Vérifier les sorties après choix 0 et annulation : absence de « Script Error: 0 ».
+- [ ] Vérifier le rendu des erreurs rouges et des saisies de mot de passe avec les couleurs.
 - [ ] Vérifier un parcours complet avec la dernière correction des comptages silencieux,
       y compris le test du script permanent ; ne pas confondre tests locaux et exécution RouterOS.
 - [ ] Tester Échap sur les deux saisies de mot de passe : accès direct au menu d'interruption,

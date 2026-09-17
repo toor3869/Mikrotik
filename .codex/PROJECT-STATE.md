@@ -6,13 +6,11 @@
 
 ## État actuel
 
-- Dernier choix 9 en échec : MCP confirme une sauvegarde Cloud présente et un scheduler Cloud
-  désactivé. Aucun nouvel effacement déclenché par l'agent. Cause native non connue.
-  Nouvel essai : remove-file lui-même refuse la cible ou l'argument, avant la vérification.
-  La documentation Cloud montre number=0, mais ce cas rencontre une dépendance possible à la
-  numérotation de session. Les deux suppressions utilisent maintenant l'identifiant trouvé et
-  vérifié, sans afficher la liste Cloud ni sa clé. Correction à valider en natif, pas encore prouvée.
-  Diagnostic détaillé et attente bornée conservés. Aucun appel de suppression via MCP.
+- Choix 9 validé par l'utilisateur et sa capture avec 7ddf121 : Cloud, scheduler, script et
+  installateur supprimés, sortie normale sans erreur ni compteur parasite. Ciblage par identifiant
+  fonctionnel dans ce parcours ; rotation du mot de passe toujours à tester séparément.
+  Ajustement visuel local suivant : une ligne aux bordures intérieures des cadres finaux,
+  une après OUI et une après la commande Cloud réussie. Aucun nouvel effacement via MCP.
 
 - TODO réconcilié avec les sorties console fournies : parcours initial avec valeurs par défaut,
   double saisie valide, première sauvegarde, remplacement de test, activation et nettoyage réussis.
@@ -45,7 +43,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Quarante et un tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
+- Quarante-deux tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.

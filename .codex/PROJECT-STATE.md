@@ -6,6 +6,17 @@
 
 ## État actuel
 
+- TODO réconcilié avec les sorties console fournies : parcours initial avec valeurs par défaut,
+  double saisie valide, première sauvegarde, remplacement de test, activation et nettoyage réussis.
+  Choix 9 : confirmation et suppressions vérifiées ; ancienne sortie « Script Error: 0 » isolée.
+  Les dernières corrections restent à tester en natif ; variantes et échecs non encore validés.
+
+- Espacement console augmenté par double `:put "";` ; publication autorisée avec le libellé
+  du choix 1 et le TODO réconcilié. Prochain essai utilisateur : choix 9 depuis le README.
+
+- Libellé du choix 1 corrigé en « Installer ou mettre à jour » ; documentation et test du menu
+  alignés, sans changement de fonctionnement. Inclus dans cette publication de test.
+
 - Habillage ANSI local : titres cyan, succès verts, avertissements jaunes et erreurs rouges.
   Reset sur chaque message ; opérations de sauvegarde inchangées.
   Publication autorisée avec les corrections de sortie et de comptage ; rendu Winbox à tester.
@@ -26,7 +37,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Trente-neuf tests statiques pour la reprise, le nettoyage, les sorties et les couleurs.
+- Quarante tests statiques pour la reprise, le nettoyage, les sorties, les couleurs et l'espacement.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.

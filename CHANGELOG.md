@@ -16,6 +16,16 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- TODO réconcilié avec les essais utilisateur : installation initiale, remplacement de test,
+  activation et nettoyage réussis ; suppression Cloud/script/scheduler confirmée au choix 9.
+  Les contrôles restants ciblent les dernières corrections, les variantes et les échecs.
+
+- Espacement console doublé entre les blocs et paragraphes, avec lignes vides après les cadres
+  de fin ; aucun changement des opérations.
+
+- Choix 1 renommé « Installer ou mettre à jour » dans le menu et la documentation, sans
+  changement de fonctionnement.
+
 - Messages de l'installateur colorés : cyan pour les titres, vert pour les succès, jaune pour
   les avertissements et rouge pour les erreurs ; reset ANSI après chaque message, saisies normales.
   Rendu Winbox à valider ; script permanent et opérations de sauvegarde inchangés.

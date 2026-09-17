@@ -79,6 +79,8 @@ class Contracts(unittest.TestCase):
         self.installer = re.sub(r'\\1B\[(?:0|31|32|33|36)m', '', self.colored_installer)
         self.installer = re.sub(r':put \("" \. (\([^\n]+\)) \. ""\);',
                                 r':put \1;', self.installer)
+        # Les contrats fonctionnels ignorent le double espacement visuel.
+        self.installer = re.sub(r'(?m)^( *:put "";\n)\1', r'\1', self.installer)
         pattern = r'^    :local runtimeSource \( \\\n(.*?)^    \);$'
         matches = re.findall(pattern, self.installer, re.M | re.S)
         self.assertEqual(len(matches), 1)
@@ -137,7 +139,7 @@ class Contracts(unittest.TestCase):
 
     def test_console_menu_exact_text(self):
         lines = ["----- Choix de l'operation -----", "",
-                 "1 - Installer ou reinstaller la sauvegarde automatique sur le cloud Mikrotik",
+                 "1 - Installer ou mettre a jour la sauvegarde automatique sur le cloud MikroTik",
                  "2 - Modifier les horaires et l'intervalle de sauvegarde",
                  "3 - Changer le mot de passe de la sauvegarde",
                  "9 - Desinstaller la sauvegarde automatique et nettoyer",
@@ -227,8 +229,17 @@ class Contracts(unittest.TestCase):
         end = code.index('} on-error={', start)
         lines = ['', '#' * 100, '', '----- Desinstallation terminee -----', '',
                  "Script, scheduler, sauvegarde Cloud et fichier d'installation supprimes.",
-                 '', '#' * 100]
+                 '', '#' * 100, '']
         self.assertEqual(re.findall(r':put "(.*)";', code[start:end]), lines)
+
+    def test_console_double_spacing(self):
+        lines = self.colored_installer.splitlines()
+        for index, line in enumerate(lines):
+            if ':put "' in line and '----- ' in line:
+                self.assertEqual(lines[index - 1].strip(), ':put "";')
+                self.assertEqual(lines[index - 2].strip(), ':put "";')
+                self.assertEqual(lines[index + 1].strip(), ':put "";')
+                self.assertEqual(lines[index + 2].strip(), ':put "";')
 
     def test_planning_independent_retry_loops(self):
         code = self.code

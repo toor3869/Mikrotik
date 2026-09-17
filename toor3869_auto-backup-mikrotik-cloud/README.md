@@ -56,7 +56,7 @@ Les séquences ANSI sont réinitialisées après chaque message ; leur rendu res
 
 | Choix | Action |
 | :---: | --- |
-| **1** | Installer ou réinstaller la sauvegarde automatique |
+| **1** | Installer ou mettre à jour la sauvegarde automatique |
 | **2** | Modifier les horaires et l'intervalle |
 | **3** | Changer le mot de passe de la sauvegarde |
 | **9** | Désinstaller et nettoyer, **sauvegarde Cloud comprise** |
@@ -65,7 +65,8 @@ Les séquences ANSI sont réinitialisées après chaque message ; leur rendu res
 Lors d'une première installation, l'outil crée la sauvegarde Cloud, installe le script et
 le scheduler, puis exécute un test réel avant d'activer l'automatisation.
 
-Une réinstallation remplace la sauvegarde après confirmation `REMPLACER`, sans suppression préalable.
+Sur une installation existante, le choix 1 met à jour les éléments en place et remplace la
+sauvegarde après confirmation `REMPLACER`, sans suppression préalable.
 La première création et le changement d'horaires ne demandent pas de confirmation `OUI`.
 
 &nbsp;

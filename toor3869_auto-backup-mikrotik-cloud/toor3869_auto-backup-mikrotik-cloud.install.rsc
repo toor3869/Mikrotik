@@ -147,7 +147,9 @@
                 :if ([:len $installerIds] > 1) do={ :error "Fichier ambigu"; };
                 :if ([:len $installerIds] = 1) do={
                     :put "";
+                    :put "";
                     :put "\1B[36m----- Nettoyage de l'installation -----\1B[0m";
+                    :put "";
                     :put "";
                     :put "Suppression du fichier d'installation.";
                     /file remove ($installerIds->0);
@@ -166,6 +168,7 @@
     };
 
     :put "";
+    :put "";
     :put "\1B[36m####################################################################################################\1B[0m";
     :put "\1B[36m#####\1B[0m";
     :put "\1B[36m##### Installation - Sauvegarde automatique MikroTik Cloud\1B[0m";
@@ -174,13 +177,16 @@
     :put "\1B[36m#####\1B[0m";
     :put "\1B[36m####################################################################################################\1B[0m";
     :put "";
+    :put "";
     :put "\1B[36m----- Choix de l'operation -----\1B[0m";
     :put "";
-    :put "1 - Installer ou reinstaller la sauvegarde automatique sur le cloud Mikrotik";
+    :put "";
+    :put "1 - Installer ou mettre a jour la sauvegarde automatique sur le cloud MikroTik";
     :put "2 - Modifier les horaires et l'intervalle de sauvegarde";
     :put "3 - Changer le mot de passe de la sauvegarde";
     :put "9 - Desinstaller la sauvegarde automatique et nettoyer";
     :put "0 - Quitter sans modification";
+    :put "";
     :put "";
     :local mode [/terminal ask prompt="Votre choix [0] : "];
     :if (($mode = "") || ($mode = "0")) do={
@@ -234,7 +240,9 @@
                         :error "Sauvegarde en cours : attendre sa fin";
                     };
                     :put "";
+                    :put "";
                     :put "\1B[33m----- Desinstallation et nettoyage -----\1B[0m";
+                    :put "";
                     :put "";
                     :put "\1B[33mCette operation supprimera :\1B[0m";
                     :put "\1B[33m- Le scheduler de sauvegarde automatique.\1B[0m";
@@ -242,7 +250,9 @@
                     :put "- La sauvegarde presente sur le cloud MikroTik.";
                     :put "\1B[33m- Le fichier d'installation.\1B[0m";
                     :put "";
+                    :put "";
                     :put "\1B[33mAucune sauvegarde Cloud ne sera conservee.\1B[0m";
+                    :put "";
                     :put "";
                     :if ([/terminal ask prompt="Confirmer avec OUI : "] != "OUI") do={
                         :put "Desinstallation annulee. Aucune modification.";
@@ -341,13 +351,19 @@
                         :local cleaned [$cleanupInstaller $installerFile];
                         :if ($cleaned = false) do={ :error "Nettoyage incomplet"; };
                         :put "";
+                        :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
+                        :put "";
                         :put "";
                         :put "\1B[36m----- Desinstallation terminee -----\1B[0m";
                         :put "";
+                        :put "";
                         :put "\1B[32mScript, scheduler, sauvegarde Cloud et fichier d'installation supprimes.\1B[0m";
                         :put "";
+                        :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
+                        :put "";
+                        :put "";
                     };
                 } on-error={
                     :set uninstallFailed true;
@@ -389,9 +405,12 @@
                     :set stage "inventaire";
                     :do {
                         :put "";
+                        :put "";
                         :put "\1B[36m----- Verification de l'installation -----\1B[0m";
                         :put "";
+                        :put "";
                         :put "Recherche des elements deja presents sur ce MikroTik";
+                        :put "";
                         :put "";
                         :local scripts [/system script find where name=$scriptName];
                         :local schedules [/system scheduler find where name=$schedulerName];
@@ -414,6 +433,7 @@
                         :put ("Script sur le Mikrotik    : " . $scriptState);
                         :put ("Scheduler sur le Mikrotik : " . $schedulerState);
                         :put ("Sauvegarde sur le cloud   : " . $backupState);
+                        :put "";
                         :put "";
                         :local scriptId;
                         # Aucun ecrasement d'un objet homonyme ancien ou appartenant a un autre outil.
@@ -447,13 +467,18 @@
                             };
                             :if ($mode != "3") do={
                                 :set stage "saisie planning";
+                                :put "";
+                                :put "";
                                 :put "\1B[36m----- Horaires et intervalle de sauvegarde -----\1B[0m";
+                                :put "";
                                 :put "";
                                 :put "Appuyez sur Entree pour conserver les valeurs proposees entre crochets.";
                                 :put "Sinon, saisissez vos propres valeurs.";
                                 :put "";
+                                :put "";
                                 :put "Heure de depart : utilisez le format HH:MM:SS sur 24 heures.";
                                 :put "Exemples : 00:00:00 pour minuit, 05:30:00 pour 5 h 30.";
+                                :put "";
                                 :put "";
                                 :local hourAccepted false;
                                 :while ($hourAccepted = false) do={
@@ -477,12 +502,15 @@
                                     };
                                 };
                                 :put "";
+                                :put "";
                                 :put "Intervalle : utilisez d pour les jours, h pour les heures,";
                                 :put "m pour les minutes et s pour les secondes.";
                                 :put "Exemples : 30m, 1h, 6h ou 1h30m.";
                                 :put "Pour une sauvegarde quotidienne, indiquez 1d ou 24h.";
                                 :put "";
+                                :put "";
                                 :put "L'intervalle doit etre superieur a zero et ne pas depasser 1d.";
+                                :put "";
                                 :put "";
                                 :local intervalAccepted false;
                                 :while ($intervalAccepted = false) do={
@@ -504,6 +532,7 @@
                                     };
                                 };
                                 :put "";
+                                :put "";
                             };
                             :local timeValue [:totime $startTime];
                             :local intervalValue [:totime $interval];
@@ -520,17 +549,23 @@
                         :if ($inputsReady = false) do={
                             :if ($mode != "2") do={
                                 :set stage "saisie mot de passe";
+                                :put "";
+                                :put "";
                                 :put "\1B[36m----- Mot de passe de la sauvegarde -----\1B[0m";
+                                :put "";
                                 :put "";
                                 :put "Ce mot de passe protege votre sauvegarde chiffree.";
                                 :put "\1B[33mConservez-le : il sera necessaire pour la restaurer.\1B[0m";
+                                :put "";
                                 :put "";
                                 :put "\1B[33mIl sera enregistre en clair dans le script installe sur ce MikroTik.\1B[0m";
                                 :put "Vous pourrez le retrouver dans la variable backupPassword.";
                                 :put "\1B[33mLes utilisateurs autorises a lire le script pourront aussi le consulter.\1B[0m";
                                 :put "";
+                                :put "";
                                 :put "Utilisez entre 8 et 128 caracteres ASCII imprimables.";
                                 :put "La saisie est invisible. Appuyez sur Echap pour annuler.";
+                                :put "";
                                 :put "";
                                 :local passwordsMatch false;
                                 :while ($passwordsMatch = false) do={
@@ -615,10 +650,13 @@
                             :if ($cloudReady = false) do={
                                 :if ($firstBackup) do={
                                     :put "";
+                                    :put "";
                                     :put "\1B[36m----- Premiere sauvegarde Cloud -----\1B[0m";
+                                    :put "";
                                     :put "";
                                     :put "Creation et envoi de la sauvegarde chiffree vers le cloud Mikrotik.";
                                     :put "Cette operation peut prendre plusieurs minutes. Merci de patienter.";
+                                    :put "";
                                     :put "";
                                 };
                                 :if (($mode = "3") && ([:len $backups] = 1)) do={
@@ -663,7 +701,9 @@
                             :set stage "installation script";
                             :if ($firstBackup) do={ :put "\1B[32mSauvegarde Cloud creee et verifiee.\1B[0m"; };
                             :put "";
+                            :put "";
                             :put "\1B[36m----- Installation de l'automatisation -----\1B[0m";
+                            :put "";
                             :put "";
                             :put "Creation du script.";
                             :if ([:len $scripts] = 0) do={
@@ -705,10 +745,13 @@
                             };
                             :set stage "test reel du script installe";
                             :put "";
+                            :put "";
                             :put "\1B[36m----- Test du script de sauvegarde -----\1B[0m";
+                            :put "";
                             :put "";
                             :put "Execution du script pour verifier son fonctionnement.";
                             :put "Cette operation peut prendre plusieurs minutes. Merci de patienter.";
+                            :put "";
                             :put "";
                             /system script run $scriptName;
                             :set runtimeValidated true;
@@ -721,11 +764,14 @@
                         :set stage "activation scheduler";
                         :if (($mode != "2") || ($wasDisabled = false)) do={
                             :put "";
+                            :put "";
                             :put "\1B[36m----- Activation de la sauvegarde automatique -----\1B[0m";
+                            :put "";
                             :put "";
                             :put "Activation du scheduler.";
                             /system scheduler enable $scheduleId;
                             :if ([/system scheduler get $scheduleId disabled] = true) do={ :error "Activation non confirmee"; };
+                            :put "";
                             :put "";
                             :put "\1B[32mSauvegarde automatique en service.\1B[0m";
                             :set summaryStartTime $startTime;
@@ -737,7 +783,9 @@
                     :if ($failed) do={
                         :if ($cancelled = false) do={
                             :put "";
+                            :put "";
                             :put "\1B[31m----- Echec de l'operation -----\1B[0m";
+                            :put "";
                             :put "";
                             :put ("\1B[31m" . ("Etape concernee : " . $stage) . "\1B[0m");
                             :put "\1B[31mL'operation n'a pas pu etre terminee.\1B[0m";
@@ -763,6 +811,7 @@
                                 :put "\1B[31mImpossible de confirmer la desactivation : verifier le scheduler.\1B[0m";
                             };
                         } else={ :put "Aucune mutation de configuration effectuee."; };
+                        :put "";
                         :put "";
                         :if ($cancelled = false) do={
                             :put "Appuyez sur Entree pour une nouvelle tentative.";
@@ -790,10 +839,13 @@
                 :set installedSource "";
                 :if ($failed) do={
                     :put "";
+                    :put "";
                     :put "\1B[33m----- Installation interrompue -----\1B[0m";
+                    :put "";
                     :put "";
                     :put "0 - Quitter en conservant les elements existants";
                     :put "9 - Desinstaller et nettoyer, sauvegarde Cloud comprise";
+                    :put "";
                     :put "";
                     :put "Votre choix [0] :";
                     :local exitChoice "";
@@ -840,9 +892,12 @@
                         :local cleanupDone [$cleanupInstaller $installerFile];
                         :if ($cleanupDone = false) do={ :error "Nettoyage non confirme apres deux essais"; };
                         :put "";
+                        :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";
+                        :put "";
                         :put "\1B[36m----- Installation terminee -----\1B[0m";
+                        :put "";
                         :put "";
                         :put "\1B[32mSauvegarde Cloud : verifiee\1B[0m";
                         :put "\1B[32mTest du script   : reussi\1B[0m";
@@ -850,13 +905,19 @@
                         :put ("Heure de depart  : " . $summaryStartTime);
                         :put ("Intervalle       : " . $summaryInterval);
                         :put "";
+                        :put "";
                         :put "\1B[33mConservez votre mot de passe pour pouvoir restaurer la sauvegarde.\1B[0m";
                         :put "";
+                        :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
+                        :put "";
+                        :put "";
                     } on-error={
                         # Un echec du menage ne doit pas desactiver une sauvegarde validee.
                         :put "";
+                        :put "";
                         :put "\1B[33m----- Nettoyage incomplet -----\1B[0m";
+                        :put "";
                         :put "";
                         :do {
                             :if ([/system scheduler get $scheduleId disabled] = false) do={
@@ -864,6 +925,7 @@
                             } else={ :put "\1B[33mLe scheduler est desactive : verifier son etat.\1B[0m"; };
                         } on-error={ :put "\1B[33mEtat actuel du scheduler non confirme.\1B[0m"; };
                         :put "\1B[33mLe nettoyage du fichier d'installation n'a pas pu etre confirme.\1B[0m";
+                        :put "";
                         :put "";
                         :put "Vous pouvez verifier sa presence dans Files et le supprimer :";
                         :put $installerFile;

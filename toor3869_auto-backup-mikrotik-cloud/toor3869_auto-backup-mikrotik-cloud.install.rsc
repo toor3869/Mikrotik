@@ -247,7 +247,7 @@
                     :put "\1B[33mCette operation supprimera :\1B[0m";
                     :put "\1B[33m- Le scheduler de sauvegarde automatique.\1B[0m";
                     :put "\1B[33m- Le script de sauvegarde automatique.\1B[0m";
-                    :put "- La sauvegarde presente sur le cloud MikroTik.";
+                    :put "\1B[33m- La sauvegarde presente sur le cloud MikroTik.\1B[0m";
                     :put "\1B[33m- Le fichier d'installation.\1B[0m";
                     :put "";
                     :put "";
@@ -301,7 +301,7 @@
                             :error "Sauvegarde en cours : aucune execution interrompue";
                         };
                         :set uninstallStage "suppression sauvegarde Cloud";
-                        :set uninstallReason "Suppression Cloud refusee ou absence non confirmee.";
+                        :set uninstallReason "Impossible de relire ou de reconnaitre la sauvegarde Cloud.";
                         # Relire apres la confirmation : ne jamais supprimer une autre sauvegarde.
                         :set backups [/system backup cloud find];
                         :if ([:len $backups] > 1) do={ :error "Cloud ambigu"; };
@@ -309,7 +309,34 @@
                             :if ([/system backup cloud get ($backups->0) name] != $backupName) do={
                                 :error "Sauvegarde Cloud etrangere";
                             };
-                            /system backup cloud remove-file number=0;
+                            # number est le slot Cloud gratuit, pas un numero de console.
+                            :set uninstallStage "commande de suppression Cloud";
+                            :set uninstallReason "La commande remove-file a echoue (erreur non classee).";
+                            :put "Suppression de la sauvegarde Cloud. Merci de patienter.";
+                            :if ([:onerror cloudError in={
+                                /system backup cloud remove-file number=0;
+                            } do={
+                                # Ne jamais afficher le message natif : il peut contenir un secret.
+                                :if ($cloudError ~ "[Pp]ermission|not allowed|[Dd]enied") do={
+                                    :set uninstallReason "Suppression Cloud refusee : droits ou operation non autorisee.";
+                                };
+                                :if ($cloudError ~ "[Tt]imeout|timed out") do={
+                                    :set uninstallReason "Suppression Cloud : delai de reponse depasse.";
+                                };
+                                :if ($cloudError ~ "[Cc]onnection|[Nn]etwork|resolve") do={
+                                    :set uninstallReason "Suppression Cloud : probleme de connexion ou de resolution DNS.";
+                                };
+                                :if ($cloudError ~ "no such|not found|does not match") do={
+                                    :set uninstallReason "Suppression Cloud : emplacement introuvable ou argument refuse.";
+                                };
+                            }]) do={ :error "Commande de suppression Cloud echouee"; };
+                        };
+                        :set uninstallStage "verification apres suppression Cloud";
+                        :set uninstallReason "Commande terminee, mais sauvegarde encore presente apres verification.";
+                        :local cloudChecks 0;
+                        :while (([:len [/system backup cloud find]] != 0) && ($cloudChecks < 10)) do={
+                            :delay 1s;
+                            :set cloudChecks ($cloudChecks + 1);
                         };
                         :if ([:len [/system backup cloud find]] != 0) do={ :error "Suppression Cloud non confirmee"; };
                         :put "\1B[32mSauvegarde Cloud : absente.\1B[0m";

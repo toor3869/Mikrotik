@@ -9,6 +9,11 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Désinstallation : diagnostic séparé de la commande Cloud et de sa vérification, catégories
+  d'erreur sans affichage du message natif et attente bornée de dix secondes pour constater
+  l'absence. Le slot officiel `number=0` est conservé ; cause de l'échec terrain non confirmée.
+- Couleur jaune appliquée aussi à la ligne annonçant la suppression de la sauvegarde Cloud.
+
 - Comptages de tâches silencieux dans l'installateur et le script permanent : suppression
   des nombres parasites issus de `print count-only`, sans retirer les contrôles de concurrence.
 - Sorties normales par fin de branche pour quitter, annuler ou terminer la désinstallation,

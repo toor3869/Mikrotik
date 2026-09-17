@@ -6,6 +6,12 @@
 
 ## État actuel
 
+- Dernier choix 9 en échec : MCP confirme une sauvegarde Cloud présente et un scheduler Cloud
+  désactivé. Aucun nouvel effacement déclenché par l'agent. Cause native non connue.
+  Documentation officielle vérifiée : `number=0` est le slot gratuit, pas un numéro de console.
+  Diagnostic de suppression détaillé et vérification bornée à dix secondes préparés pour
+  publication ; ligne d'avertissement Cloud colorée. Prochain essai manuel du choix 9.
+
 - TODO réconcilié avec les sorties console fournies : parcours initial avec valeurs par défaut,
   double saisie valide, première sauvegarde, remplacement de test, activation et nettoyage réussis.
   Choix 9 : confirmation et suppressions vérifiées ; ancienne sortie « Script Error: 0 » isolée.
@@ -37,7 +43,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Quarante tests statiques pour la reprise, le nettoyage, les sorties, les couleurs et l'espacement.
+- Quarante et un tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.

@@ -232,6 +232,18 @@ class Contracts(unittest.TestCase):
                  '', '#' * 100, '']
         self.assertEqual(re.findall(r':put "(.*)";', code[start:end]), lines)
 
+    def test_cloud_deletion_diagnostics(self):
+        code = self.uninstall
+        self.assertIn(':if ([:onerror cloudError in={', code)
+        self.assertEqual(code.count('/system backup cloud remove-file number=0;'), 1)
+        self.assertIn('commande de suppression Cloud', code)
+        self.assertIn('verification apres suppression Cloud', code)
+        self.assertIn('$cloudChecks < 10', code)
+        self.assertIn(':delay 1s;', code)
+        self.assertNotRegex(code, r':(?:put|log)[^\n]*\$cloudError')
+        self.assertIn('\\1B[33m- La sauvegarde presente sur le cloud MikroTik.\\1B[0m',
+                      self.colored_installer)
+
     def test_console_double_spacing(self):
         lines = self.colored_installer.splitlines()
         for index, line in enumerate(lines):

@@ -95,6 +95,10 @@ ftp \
 - Encadrer chaque sous-titre console par deux lignes de tirets, immédiatement au-dessus et
   au-dessous, sans ligne vide dans ce cadre. Leur longueur égale celle du titre `----- Texte -----`
   et leur couleur est identique au titre. Ne pas remplacer ce cadre par une ligne isolée.
+- Pour la bannière de début affichée en console uniquement, utiliser sept lignes de 100
+  caractères : bordures pleines, intérieur de 90 caractères entre cinq `#` de chaque côté.
+  Centrer les trois textes, avec l'espace supplémentaire à gauche si nécessaire ; conserver
+  les deux lignes intérieures vides bordées. Les bannières des sources restent alignées à gauche.
 
 ## Installation, commentaires et sécurité
 

@@ -119,11 +119,12 @@ class Contracts(unittest.TestCase):
         self.assertIn(':local scriptName "' + NAME + '.rsc";', self.source)
 
     def test_console_start_banner_before_menu(self):
-        lines = ["", "#" * 100, "#####",
-                 "##### Installation - Sauvegarde automatique MikroTik Cloud",
-                 "##### " + INSTALLER.name,
-                 "##### VERSION 2026-09-18 - BY TOOR3869",
-                 "#####", "#" * 100, ""]
+        texts = ["", "Installation - Sauvegarde automatique MikroTik Cloud",
+                 INSTALLER.name, "VERSION 2026-09-18 - BY TOOR3869", ""]
+        interior = ["#####" + " " * ((90 - len(text) + 1) // 2) + text
+                    + " " * ((90 - len(text)) // 2) + "#####" for text in texts]
+        self.assertTrue(all(len(line) == 100 for line in interior))
+        lines = ["", "#" * 100, *interior, "#" * 100, ""]
         banner = "\n".join('    :put "' + line + '";' for line in lines)
         self.assertEqual(self.code.count(banner), 1)
         self.assertLess(self.code.index(banner), self.code.index(':local mode '))
@@ -169,6 +170,10 @@ class Contracts(unittest.TestCase):
         self.assertNotIn('\x1b', self.colored_installer)
 
     def test_console_palette_semantics(self):
+        for label, variable in (("Heure de depart  : ", "summaryStartTime"),
+                                ("Intervalle       : ", "summaryInterval")):
+            self.assertIn(':put ("\\1B[32m" . ("' + label + '" . $' + variable
+                          + ') . "\\1B[0m");', self.colored_installer)
         examples = {
             '36': '----- Choix de l\'operation -----',
             '32': 'Test termine avec succes.',
@@ -645,6 +650,13 @@ class Contracts(unittest.TestCase):
             self.assertGreater(len(assignments), 4)
             for value in assignments:
                 self.assertRegex(value, r'^"[^"$]*";$')
+
+    def test_password_confirmation_separated_from_cloud_warning(self):
+        lines = self.colored_installer.splitlines()
+        for message in ('ATTENTION : suppression Cloud', 'La sauvegarde Cloud sera remplacee'):
+            index = next(i for i, line in enumerate(lines) if message in line)
+            self.assertEqual(lines[index - 1].strip(), ':put "";')
+            self.assertNotEqual(lines[index - 2].strip(), ':put "";')
 
     def test_spacing_in_alternative_paths(self):
         code = self.installer

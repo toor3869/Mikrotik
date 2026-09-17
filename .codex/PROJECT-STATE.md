@@ -6,15 +6,27 @@
 
 ## État actuel
 
+- Récapitulatif final : heure et intervalle passés en vert, rappel du mot de passe conservé
+  en orange. Correction locale uniquement ; rendu à confirmer après publication.
+
+- Bannière de début console centrée et fermée à droite sur 100 caractères, avec cinq `#`
+  de chaque côté ; sources inchangées dans leur présentation. Rendu Winbox à valider.
+
+- Choix 3 validé par la sortie complète et la confirmation utilisateur : suppression/recréation
+  Cloud après EFFACER, test réussi, scheduler actif et installateur supprimé, sortie normale.
+  Nouveau mot de passe confirmé dans le script par l'utilisateur, sans consultation du secret
+  par l'agent. Planning conservé : 00:10:00 et 06:00:00. Restauration non testée.
+  Séparation locale ajoutée entre confirmation et avertissements Cloud des choix 1/3.
+
 - Choix 2 validé par relecture MCP sur le RB2011 : scheduler Cloud unique, start-date 2026-01-01,
   start-time 00:10:00, interval 06:00:00, disabled=false, prochain passage annoncé 06:10:00.
   Installateur encore présent : conservation après planning seul confirmée. run-count=0 :
   premier cycle automatique non validé. Pas de mutation du routeur pendant cette vérification.
-  Le maintien d'un scheduler initialement désactivé et la rotation restent à tester.
+  Le maintien d'un scheduler initialement désactivé reste à tester.
 
 - Exemple visuel clarifié : les 15 sous-titres sont maintenant entourés de deux bordures de
-  tirets de la largeur du titre, sans ligne vide intérieure. Couleurs conservées ; correction
-  locale non publiée. L'ancien séparateur isolé publié dans 0c25cf1 est remplacé.
+  tirets de la largeur du titre, sans ligne vide intérieure. Couleurs conservées ; rendu publié
+  validé visuellement par l'utilisateur. Point retiré du TODO, autres espacements à vérifier.
 
 - Revue locale de tous les chemins d'affichage : espacements des confirmations, reprises,
   annulations, erreurs de saisie et rotation Cloud complétés ; aucun changement fonctionnel.
@@ -37,7 +49,7 @@
 
 - Choix 9 validé par l'utilisateur et sa capture avec 7ddf121 : Cloud, scheduler, script et
   installateur supprimés, sortie normale sans erreur ni compteur parasite. Ciblage par identifiant
-  fonctionnel dans ce parcours ; rotation du mot de passe toujours à tester séparément.
+  fonctionnel dans ce parcours ; rotation également validée au choix 3 selon la sortie utilisateur.
   Ajustement visuel local suivant : une ligne aux bordures intérieures des cadres finaux,
   une après OUI et une après la commande Cloud réussie. Aucun nouvel effacement via MCP.
 
@@ -72,7 +84,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Quarante-six tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
+- Quarante-sept tests statiques pour la reprise, les diagnostics, les couleurs et l'espacement.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.

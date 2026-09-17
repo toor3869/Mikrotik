@@ -9,6 +9,11 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Heure et intervalle du récapitulatif final affichés en vert comme les autres résultats.
+
+- Ligne vide entre la confirmation du mot de passe et les avertissements de rotation ou
+  de remplacement Cloud ; aucun espace supplémentaire sur l'installation initiale.
+
 - Revue des espacements des parcours secondaires : confirmations, mots de passe invalides,
   rotation Cloud, planning conservé désactivé, reprises et annulations. Suppression d'un
   séparateur cumulé sur le parcours d'annulation ; opérations et garde-fous inchangés.
@@ -33,8 +38,16 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- Rotation du mot de passe validée par l'essai utilisateur : recréation Cloud, test du script,
+  réactivation et nettoyage réussis ; nouveau mot de passe confirmé dans le script par
+  l'utilisateur et planning conservé. Point retiré du TODO ; restauration encore à tester.
+
+- Bannière de début en console fermée à droite et textes centrés sur 100 caractères ;
+  bannières des fichiers source inchangées.
+
 - Sous-titres encadrés par deux lignes de tirets ajustées à leur largeur, sans ligne vide
-  intérieure, conformément à l'exemple visuel ; couleurs conservées.
+  intérieure, conformément à l'exemple visuel ; couleurs conservées. Rendu validé par
+  l'utilisateur dans Winbox ; validation retirée du TODO.
 
 - Choix 2 validé par essai utilisateur et relecture MCP : heure 00:10:00, intervalle 6h,
   scheduler actif et installateur conservé. TODO limité aux variantes encore non testées.

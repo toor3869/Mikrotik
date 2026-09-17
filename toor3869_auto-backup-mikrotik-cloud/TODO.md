@@ -2,7 +2,7 @@
 
 ## À valider
 
-- [ ] Valider dans Winbox les cadres des sous-titres : deux bordures ajustées, sans vide intérieur.
+- [ ] Vérifier dans Winbox la bannière de début centrée et fermée à droite sur 100 caractères.
 - [ ] Vérifier le dernier ajustement visuel : une ligne vide à l'intérieur des bordures du cadre,
       une après OUI et les retours Cloud ; aucun cumul entre inventaire, horaires et mot de passe.
 - [ ] Vérifier les espacements des confirmations, reprises, erreurs et annulations lors des
@@ -24,7 +24,6 @@
 - [ ] Vérifier le premier cycle planifié.
 - [ ] Tester les états partiels, doublons, objets homonymes et mise à jour sans doublon.
 - [ ] Tester le planning seul avec un scheduler initialement désactivé : préserver cet état.
-- [ ] Tester la rotation du mot de passe avec confirmation de suppression.
 - [ ] Vérifier la restauration d'une sauvegarde de test et son ouverture avec le mot de passe saisi.
 - [ ] Vérifier la conservation du fichier d'installation après échec ou annulation.
 - [ ] Tester le second essai de nettoyage : succès, fichier déjà absent et échec persistant,

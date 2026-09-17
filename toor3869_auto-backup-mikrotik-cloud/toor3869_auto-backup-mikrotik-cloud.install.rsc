@@ -173,11 +173,11 @@
     :put "";
     :put "";
     :put "\1B[36m####################################################################################################\1B[0m";
-    :put "\1B[36m#####\1B[0m";
-    :put "\1B[36m##### Installation - Sauvegarde automatique MikroTik Cloud\1B[0m";
-    :put "\1B[36m##### toor3869_auto-backup-mikrotik-cloud.install.rsc\1B[0m";
-    :put "\1B[36m##### VERSION 2026-09-18 - BY TOOR3869\1B[0m";
-    :put "\1B[36m#####\1B[0m";
+    :put "\1B[36m#####                                                                                          #####\1B[0m";
+    :put "\1B[36m#####                   Installation - Sauvegarde automatique MikroTik Cloud                   #####\1B[0m";
+    :put "\1B[36m#####                      toor3869_auto-backup-mikrotik-cloud.install.rsc                     #####\1B[0m";
+    :put "\1B[36m#####                             VERSION 2026-09-18 - BY TOOR3869                             #####\1B[0m";
+    :put "\1B[36m#####                                                                                          #####\1B[0m";
     :put "\1B[36m####################################################################################################\1B[0m";
     :put "";
     :put "";
@@ -637,11 +637,13 @@
                         :local required "";
                         :if ($cloudReady = false) do={
                             :if (($mode = "3") && ([:len $backups] = 1)) do={
+                                :put "";
                                 :put "\1B[33mATTENTION : suppression Cloud puis recreation avec le nouveau mot de passe.\1B[0m";
                                 :put "\1B[33mUn echec de recreation laissera le routeur sans sauvegarde Cloud.\1B[0m";
                                 :set required "EFFACER";
                             } else={
                                 :if (($mode = "1") && ([:len $backups] = 1)) do={
+                                    :put "";
                                     :put "\1B[33mLa sauvegarde Cloud sera remplacee avec le mot de passe saisi.\1B[0m";
                                     :set required "REMPLACER";
                                 };
@@ -941,8 +943,8 @@
                         :put "\1B[32mSauvegarde Cloud : verifiee\1B[0m";
                         :put "\1B[32mTest du script   : reussi\1B[0m";
                         :put "\1B[32mScheduler        : actif\1B[0m";
-                        :put ("Heure de depart  : " . $summaryStartTime);
-                        :put ("Intervalle       : " . $summaryInterval);
+                        :put ("\1B[32m" . ("Heure de depart  : " . $summaryStartTime) . "\1B[0m");
+                        :put ("\1B[32m" . ("Intervalle       : " . $summaryInterval) . "\1B[0m");
                         :put "";
                         :put "\1B[33mConservez votre mot de passe pour pouvoir restaurer la sauvegarde.\1B[0m";
                         :put "";

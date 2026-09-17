@@ -99,6 +99,14 @@ ftp \
 - Ne pas recopier les paramètres CPE01 sur d'autres sites ; garder les scripts portables.
 - Aucun import, lancement, déploiement, suppression Cloud, commit ou push sans autorisation
   correspondante. Une préparation locale ne constitue pas une validation en production.
+- Dans l'installateur Cloud, distinguer une annulation de saisie d'un échec technique :
+  l'annulation rejoint le menu de sortie, sans imposer le prompt de nouvelle tentative.
+- Conserver le verrou pendant toute la session, menus de reprise et nettoyage compris ;
+  ne le libérer que sur une sortie finale contrôlée. Documenter séparément l'arrêt forcé.
+- Réutiliser la routine de nettoyage ciblée pour installation et désinstallation. Après un prompt
+  destructif, relire les objets et leurs marqueurs avant mutation ; ne pas réutiliser aveuglément
+  les identifiants antérieurs. Afficher des motifs prédéfinis, jamais l'erreur native potentiellement
+  sensible. Couvrir ces contrats par des tests sans prétendre remplacer les essais RouterOS.
 
 ## Documentation et contrôles
 

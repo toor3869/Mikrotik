@@ -2,26 +2,64 @@
 
 ## Dernière actualisation
 
-2026-09-17
+2026-09-18
 
 ## État actuel
 
-- Première publication expérimentale autorisée par l'utilisateur pour les essais interactifs.
+- README du module restructuré pour la lecture : sept sections avec sommaire, tableaux courts,
+  détails repliables et risques visibles. Documentation uniquement, script inchangé par cette passe.
+
+- Deuxième publication expérimentale autorisée le 2026-09-18 pour les essais sur le RB2011.
+  Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Douze tests statiques réussis ; aucune validation native de cet installateur réalisée.
+- Trente-cinq tests statiques réussis pour la reprise, le nettoyage et la désinstallation.
+  Premier parcours terminé selon l'utilisateur ; état Cloud,
+  script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
+- Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.
+- Premier menu multilignes intégré selon le texte validé, titre entouré de cinq tirets.
+  Inventaire initial intégré : trois libellés alignés, états détectés et scheduler actif/désactivé.
+  Bloc horaires/intervalle intégré : boucles indépendantes de saisie, exceptions de conversion
+  traitées, valeurs proposées conservées sur Entrée, intervalle dans ]0,1d]. Tests natifs à faire.
+  Bloc mot de passe intégré : reprises locales après longueur/caractère invalide, double saisie
+  reprise après différence. Échap/Ctrl+C/expiration annulent. Aucun mot de passe affiché.
+  Une saisie trop longue est consommée jusqu'à Entrée puis entièrement refusée, jamais tronquée
+  en mot de passe accepté ; comportement de collage et touches à vérifier en natif.
+- Confirmation OUI retirée ; seules les confirmations de remplacement/suppression d'une
+  sauvegarde existante sont conservées. Choix 9 implémenté localement avec confirmation OUI :
+  suppression Cloud, scheduler, script et installateur ; objets étrangers et jobs actifs refusés.
+  Suppressions vérifiées, reprise partielle possible ; essai RouterOS encore nécessaire.
+- Après abandon, proposition 0/9 : sortie sans nettoyage par défaut, 9 puis Entrée redispatche
+  vers le même bloc de désinstallation, avec nouvel inventaire et confirmation OUI.
+  Pas de suppression sur Échap ; tests de touches à réaliser en natif.
+- Revue globale appliquée : annulation de mot de passe distincte d'une panne, verrou détenu
+  jusqu'à la sortie finale, nettoyage commun, motifs explicites sans erreur native affichée.
+  Désinstallation : inventaire relu après confirmation et objets revérifiés avant suppression.
+- Étape première sauvegarde Cloud intégrée : message d'attente, puis succès après vérification.
+  Étape installation de l'automatisation intégrée : « Creation du script. » puis
+  « Creation du scheduler. » avant chaque opération, selon les textes validés.
+  Étape de test du script intégrée selon le texte validé, succès après exécution réussie.
+  Étape d'activation intégrée, « Sauvegarde automatique en service. » après relecture active.
+  Le parcours planning seul préserve toujours un scheduler initialement désactivé.
+  Nettoyage : titre et annonce courte validés, sans message de succès supplémentaire ;
+  suppression ciblée, seconde tentative automatique avec nouvelle recherche du fichier ;
+  message « Nettoyage incomplet » seulement après échec persistant. Aucun nouveau test Cloud.
+  Récapitulatif final encadré intégré, valeurs choisies conservées hors du bloc principal ;
+  affichage après test/activation et nettoyage sans erreur, absent pour le planning seul.
+  Présentation des parcours de remplacement/recréation encore à revoir avec l'utilisateur.
+  Aucun nouveau déploiement sur un routeur pendant cette préparation.
 - Source embarquée présentée en chaînes concaténées multilignes, sans changement du contenu
   généré ; tests adaptés au décodage et à l'exclusion du bloc dans les contrôles de l'installateur.
 - Commentaire identique script/scheduler : `TOOR3869 -> Sauvegarde automatique chiffree vers
   MikroTik Cloud`, texte exact demandé par l'utilisateur, intégré à la création
   ainsi qu'aux contrôles de reconnaissance ; aucun changement sur le routeur.
-- Copie de travail uniquement ; source CPE01 et routeur inchangés.
+- Publication de la préparation demandée ; source CPE01 et routeurs inchangés.
 - Conventions des scripts génériques reprises et adaptées dans `AGENTS.md` pour ce dépôt public.
 - Normalisation complète du nouveau dépôt non réalisée ; `.gitattributes` absent.
 
 ## Décisions validées
 
-- Licence MIT choisie par l'utilisateur ; fichier `LICENSE` préparé localement, non publié.
+- Licence MIT choisie par l'utilisateur ; fichier `LICENSE` présent dans le premier commit publié.
 - Un changement ultérieur de licence ne retire pas les droits des versions déjà distribuées.
 - Préparer un installateur réutilisable sur différents sites, public et sans secret embarqué.
 - Installation par import manuel ou téléchargement depuis une commande de README.
@@ -29,6 +67,8 @@
 - Prévoir installation, réinstallation, modification du planning ou du mot de passe.
 - Planning proposé : date fixe 2026-01-01, heure 00:00:00 et intervalle 1h ; heure et intervalle
   modifiables par saisie interactive, Entrée acceptant la valeur proposée.
+- Intervalle limité à un jour dans cet installateur ; une valeur héritée supérieure à un jour
+  n'est pas modifiée implicitement en mode mot de passe et provoque le refus avant mutation.
 - Mot de passe saisi interactivement, conservé dans le script installé et consultable dans Winbox ;
   aucune dépendance à un gestionnaire de secrets externe.
 - Première sauvegarde sans replace si absente, validation, installation du script permanent et
@@ -39,9 +79,17 @@
 - Un dossier autonome par fonction, sans socle commun requis entre les modules.
 - Suppression du doublon `.rsc` demandée : la source embarquée est désormais l'unique référence.
   Essais prévus sur un autre MikroTik ; ne pas toucher à CPE01.
-- Nettoyer le fichier d'installation seulement après test réel réussi et scheduler actif.
+- Nettoyer le fichier d'installation après test réel réussi et scheduler actif, ou en dernier
+  après désinstallation explicitement confirmée avec OUI et suppressions vérifiées.
 
 ## Travail réalisé
+
+- Reprise locale après erreur : Entrée refait l'inventaire, réutilise les saisies validées et
+  conserve le Cloud déjà vérifié si ses métadonnées concordent. Échap rejoint le menu de sortie,
+  sans nettoyage par défaut ; choix 9 explicite et confirmation OUI pour désinstaller.
+  Traitement d'erreur limité au scheduler reconnu, avec nouvelle recherche et contrôle d'arrêt.
+  Vérification des jobs avant et après désactivation ; aucun job interrompu automatiquement.
+  Tests natifs de reprise encore requis ; aucun déploiement ni changement sur CPE01.
 
 - Déplacement local vérifié par comparaison binaire, sans exécution ni modification du script.
 - Instructions définies pour les bannières MikroTik, le nommage, les commandes multilignes,
@@ -68,8 +116,8 @@
 
 ## Point de reprise
 
-Premier test interactif autorisé sur l'équipement de test choisi par l'utilisateur ; ne pas importer
-sur CPE01. Tests : `python3 -m unittest discover -s toor3869_auto-backup-mikrotik-cloud/tests -v`.
+Deuxième passe interactive sur le RB2011 depuis le README publié ; ne pas importer sur CPE01.
+Tests : `python3 -m unittest discover -s toor3869_auto-backup-mikrotik-cloud/tests -v`.
 
 ## Risques et précautions
 

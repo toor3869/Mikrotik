@@ -82,6 +82,12 @@ class Contracts(unittest.TestCase):
         self.assertEqual(len(chunks), len(matches[0].splitlines()))
         self.source = decode_ros("".join(chunks)).replace("\r\n", "\n")
         self.code = re.sub(pattern, '', self.installer, flags=re.M | re.S)
+        start = self.code.index('    # Parcours de desinstallation independant')
+        end = self.code.index('    # Fin du parcours de desinstallation.')
+        self.uninstall = self.code[start:end]
+        self.code = self.code[:start] + self.code[end:]
+        self.cleanup = self.code.split(':local cleanupInstaller do={', 1)[1].split(
+            '\n    :put "";\n    :put "' + '#' * 100, 1)[0]
 
     def test_banners_encoding_and_footer(self):
         for name, data in ((NAME + ".rsc", self.source.encode()),
@@ -104,6 +110,16 @@ class Contracts(unittest.TestCase):
         self.assertEqual(self.source.count(TOKEN), 1)
         self.assertIn(':local scriptName "' + NAME + '.rsc";', self.source)
 
+    def test_console_start_banner_before_menu(self):
+        lines = ["", "#" * 100, "#####",
+                 "##### Installation - Sauvegarde automatique MikroTik Cloud",
+                 "##### " + INSTALLER.name,
+                 "##### VERSION 2026-09-17 - BY TOOR3869",
+                 "#####", "#" * 100, ""]
+        banner = "\n".join('    :put "' + line + '";' for line in lines)
+        self.assertEqual(self.code.count(banner), 1)
+        self.assertLess(self.code.index(banner), self.code.index(':local mode '))
+
     def test_identical_script_and_scheduler_comments(self):
         comment = "TOOR3869 -> Sauvegarde automatique chiffree vers MikroTik Cloud"
         self.assertIn(':local scriptComment "' + comment + '";', self.installer)
@@ -115,9 +131,96 @@ class Contracts(unittest.TestCase):
             self.assertIn('get $' + identifier + ' comment] != $' + variable, self.installer)
         self.assertNotIn('$marker', self.installer)
 
+    def test_console_menu_exact_text(self):
+        lines = ["----- Choix de l'operation -----", "",
+                 "1 - Installer ou reinstaller la sauvegarde automatique sur le cloud Mikrotik",
+                 "2 - Modifier les horaires et l'intervalle de sauvegarde",
+                 "3 - Changer le mot de passe de la sauvegarde",
+                 "9 - Desinstaller la sauvegarde automatique et nettoyer",
+                 "0 - Quitter sans modification", ""]
+        menu = "\n".join('    :put "' + line + '";' for line in lines)
+        menu += '\n    :local mode [/terminal ask prompt="Votre choix [0] : "];'
+        self.assertEqual(self.code.count(menu), 1)
+
     def test_lexical_balance(self):
         balanced(self.source)
         balanced(self.installer)
+
+    def test_uninstall_confirmation_and_ownership(self):
+        code = self.uninstall
+        confirm = code.index('prompt="Confirmer avec OUI : "] != "OUI"')
+        disable = code.index('/system scheduler disable')
+        self.assertLess(confirm, disable)
+        for guard in ('comment] != $scriptComment', 'comment] != $schedulerComment',
+                      'on-event] != $event', 'name] != $backupName',
+                      '/system script job print count-only'):
+            self.assertIn(guard, code[:confirm])
+        self.assertIn(':return 0;', code[confirm:disable])
+        self.assertIn(':set toor3869CloudInstallerLock false;', code[confirm:disable])
+        self.assertNotIn('/system script job remove', code)
+        self.assertNotIn('upload-file', code)
+        self.assertNotIn('/system scheduler enable', code)
+
+    def test_uninstall_order_verification_and_retry(self):
+        code = self.uninstall
+        commands = ['/system scheduler disable', '/system backup cloud remove-file',
+                    '/system scheduler remove', '/system script remove', '$cleanupInstaller $installerFile']
+        positions = [code.index(command) for command in commands]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn('/system script job print count-only', code[positions[0]:positions[1]])
+        self.assertIn('name] != $backupName', code[positions[0]:positions[1]])
+        for message, start, end in [('Suppression Cloud non confirmee', positions[1], positions[2]),
+                                     ('Suppression scheduler non confirmee', positions[2], positions[3]),
+                                     ('Suppression script non confirmee', positions[3], positions[4])]:
+            self.assertIn(message, code[start:end])
+        self.assertIn('($cleanupDone = false) && ($cleanupAttempt < 2)', self.cleanup)
+        self.assertIn('[/file find where name=$installerFile]', self.cleanup)
+        self.assertLess(code.index(':if ($cleaned = false)'),
+                        code.index('----- Desinstallation terminee -----'))
+        self.assertIn('Les suppressions deja effectuees ne sont pas annulees.', code)
+        self.assertIn(':set toor3869CloudInstallerLock false;', code[positions[4]:])
+
+    def test_planning_independent_retry_loops(self):
+        code = self.code
+        hour = code.index(':while ($hourAccepted = false)')
+        interval = code.index(':while ($intervalAccepted = false)')
+        end = code.index(':local timeValue ')
+        self.assertLess(hour, interval)
+        self.assertLess(end, code.index(':set stage "confirmation"'))
+        self.assertIn('Heure de depart [', code[hour:interval])
+        self.assertIn('Heure invalide.', code[hour:interval])
+        self.assertIn('[:len $candidate] = 8', code[hour:interval])
+        self.assertIn('^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]', code[hour:interval])
+        self.assertIn('($parsedTime >= 0s) && ($parsedTime < 1d)', code[hour:interval])
+        self.assertIn('on-error={ :set hourAccepted false; }', code[hour:interval])
+        self.assertIn('Intervalle entre les sauvegardes [', code[interval:end])
+        self.assertIn('Intervalle invalide.', code[interval:end])
+        self.assertIn('($parsedInterval > 0s) && ($parsedInterval <= 1d)', code[interval:end])
+        self.assertIn('on-error={ :set intervalAccepted false; }', code[interval:end])
+        self.assertNotIn(':set startTime', code[interval:end])
+        self.assertIn(':set candidate $startTime', code[hour:interval])
+        self.assertIn(':set candidate $interval', code[interval:end])
+        self.assertIn('($intervalValue > 1d)', code[end:])
+
+    def test_inventory_presentation_and_states(self):
+        code = self.code
+        title = ':put "----- Verification de l\'installation -----";'
+        description = ':put "Recherche des elements deja presents sur ce MikroTik";'
+        self.assertIn(title, code)
+        self.assertIn(description, code)
+        self.assertLess(code.index(title), code.index(':local scripts '))
+        labels = ("Script sur le Mikrotik    : ", "Scheduler sur le Mikrotik : ",
+                  "Sauvegarde sur le cloud   : ")
+        for label, variable, absent in zip(labels, ("scriptState", "schedulerState", "backupState"),
+                                            ("absent", "absent", "absente")):
+            self.assertEqual(label.index(':'), 26)
+            self.assertIn(':put ("' + label + '" . $' + variable + ');', code)
+            self.assertIn(':local ' + variable + ' "' + absent + '";', code)
+        self.assertIn(':set scriptState "present"', code)
+        self.assertIn(':set backupState "presente"', code)
+        self.assertIn(':set schedulerState "present (actif)"', code)
+        self.assertIn(':set schedulerState "present (desactive)"', code)
+        self.assertLess(code.index(':error "Etat ambigu"'), code.index(':local scriptState '))
 
     def test_password_round_trip(self):
         # Jeu fictif : jamais de mot de passe reel dans les tests.
@@ -134,6 +237,29 @@ class Contracts(unittest.TestCase):
                       "[:len $value] >= 128", "[:len $value] < 8"):
             self.assertIn(guard, self.installer)
         self.assertNotRegex(self.installer, r':(?:put|log)[^\n]*\$(?:password|confirmation)')
+
+    def test_password_retry_and_cancellation(self):
+        reader = self.code.split(':local readPassword do={', 1)[1].split(':local encodePassword', 1)[0]
+        self.assertIn(':while (true)', reader)
+        self.assertIn(':while ($submitted = false)', reader)
+        self.assertIn(':set invalid true;', reader)
+        self.assertIn(':return "";', reader)
+        self.assertNotIn('on-error', reader)
+        self.assertIn(':put $1;', reader)
+        self.assertNotIn(':put $value', reader)
+        self.assertIn(':put "Mot de passe trop court.', reader)
+        self.assertLess(reader.index(':set submitted true;'), reader.index(':if ($invalid)'))
+        pair = self.code.split(':while ($passwordsMatch = false)', 1)[1].split(':local token', 1)[0]
+        self.assertIn('$readPassword "Saisissez votre mot de passe :"', pair)
+        self.assertIn('$readPassword "Confirmez votre mot de passe :"', pair)
+        self.assertIn(':if ($password = $confirmation)', pair)
+        self.assertIn(':set passwordsMatch true;', pair)
+        self.assertIn(':set password "";', pair)
+        self.assertIn(':set confirmation "";', pair)
+        self.assertIn('Les mots de passe ne correspondent pas. Recommencez la saisie.', pair)
+        self.assertNotIn('on-error', pair)
+        self.assertNotIn('saisie planning', pair)
+        self.assertNotIn('/system', pair)
 
     def test_exact_identities_and_no_site_configuration(self):
         self.assertIn(':local scriptName "' + NAME + '.rsc";', self.installer)
@@ -173,6 +299,74 @@ class Contracts(unittest.TestCase):
         self.assertNotIn("remove-file", self.source)
         self.assertIn("replace=$backupName", self.source)
 
+    def test_confirmation_only_when_existing_backup_is_replaced_or_deleted(self):
+        block = self.code.split(':set stage "confirmation";', 1)[1].split(
+            ':set stage "mise en securite scheduler";', 1)[0]
+        self.assertIn(':local required "";', block)
+        self.assertNotIn('"OUI"', block)
+        self.assertIn('($mode = "3") && ([:len $backups] = 1)', block)
+        self.assertIn('($mode = "1") && ([:len $backups] = 1)', block)
+        self.assertIn(':set required "EFFACER";', block)
+        self.assertIn(':set required "REMPLACER";', block)
+        gate = block.split(':if ($required != "") do={', 1)[1]
+        self.assertIn('/terminal ask prompt=', gate)
+        self.assertIn(':error "Operation annulee";', gate)
+
+    def test_first_backup_progress_and_verified_success(self):
+        code = self.code
+        start = code.index(':local firstBackup ([:len $backups] = 0);')
+        title = code.index(':put "----- Premiere sauvegarde Cloud -----";')
+        upload = code.index('/system backup cloud upload-file')
+        checked = code.index(':set stage "verification premiere sauvegarde";')
+        success = code.index(':put "Sauvegarde Cloud creee et verifiee.";')
+        self.assertLess(start, title)
+        self.assertLess(title, upload)
+        self.assertLess(upload, checked)
+        self.assertLess(checked, success)
+        self.assertIn(':if ($firstBackup) do={', code[start:title])
+        self.assertIn(':error "Sauvegarde non confirmee";', code[checked:success])
+        self.assertIn('Cette operation peut prendre plusieurs minutes. Merci de patienter.', code)
+
+    def test_automation_installation_messages(self):
+        code = self.code
+        title = code.index(':put "----- Installation de l\'automatisation -----";')
+        script = code.index(':put "Creation du script.";')
+        scheduler = code.index(':put "Creation du scheduler.";')
+        self.assertLess(code.index(':put "Sauvegarde Cloud creee et verifiee.";'), title)
+        self.assertLess(title, script)
+        self.assertLess(script, code.index('/system script add'))
+        self.assertLess(code.index('/system script add'), scheduler)
+        self.assertLess(scheduler, code.index('/system scheduler add'))
+
+    def test_runtime_test_progress_and_success_order(self):
+        code = self.code
+        lines = ["", "----- Test du script de sauvegarde -----", "",
+                 "Execution du script pour verifier son fonctionnement.",
+                 "Cette operation peut prendre plusieurs minutes. Merci de patienter.", ""]
+        block = "\n".join('                    :put "' + line + '";' for line in lines)
+        self.assertIn(block, code)
+        run = code.index('/system script run $scriptName;')
+        validated = code.index(':set runtimeValidated true;')
+        success = code.index(':put "Test termine avec succes.";')
+        self.assertLess(code.index(block), run)
+        self.assertLess(run, validated)
+        self.assertLess(validated, success)
+        self.assertLess(success, code.index(':set stage "activation scheduler";'))
+
+    def test_activation_message_after_verified_enable(self):
+        block = self.code.split(':set stage "activation scheduler";', 1)[1]
+        title = block.index(':put "----- Activation de la sauvegarde automatique -----";')
+        action = block.index(':put "Activation du scheduler.";')
+        enable = block.index('/system scheduler enable $scheduleId;')
+        check = block.index(':error "Activation non confirmee";')
+        success = block.index(':put "Sauvegarde automatique en service.";')
+        self.assertLess(title, action)
+        self.assertLess(action, enable)
+        self.assertLess(enable, check)
+        self.assertLess(check, success)
+        self.assertLess(success, block.index('} else={ :put "Planning modifie.'))
+        self.assertIn('($mode != "2") || ($wasDisabled = false)', block[:title])
+
     def test_planning_mode_no_cloud_or_secret_changes(self):
         code = self.code
         planning = code.split(':if ($mode = "2") do={', 1)[1].split('} else={', 1)[0]
@@ -180,17 +374,71 @@ class Contracts(unittest.TestCase):
         self.assertNotIn("source=", planning)
         self.assertIn('($mode != "2") || ($wasDisabled = false)', code)
 
+    def test_interrupted_exit_proposes_shared_uninstall_without_default_deletion(self):
+        code = self.code
+        start = code.index(':put "----- Installation interrompue -----";')
+        end = code.index('# Nettoyage uniquement apres test reel', start)
+        proposal = code[start:end]
+        self.assertIn('0 - Quitter en conservant les elements existants', proposal)
+        self.assertIn('9 - Desinstaller et nettoyer, sauvegarde Cloud comprise', proposal)
+        self.assertIn(':local exitChoice "";', proposal)
+        self.assertIn('($key = 13) || ($key = 10)', proposal)
+        self.assertIn('($key < 0) || ($key = 27) || ($key = 3)', proposal)
+        self.assertIn('on-error={ :set exitChoice ""; }', proposal)
+        gate = proposal.index(':if ($exitChoice = "9")')
+        self.assertIn(':set mode "9";', proposal[gate:])
+        self.assertIn(':set dispatchAgain true;', proposal[gate:])
+        self.assertNotIn('/file remove', proposal)
+        self.assertNotIn('/system backup cloud remove-file', proposal)
+        self.assertEqual(self.uninstall.count('prompt="Confirmer avec OUI : "'), 1)
+        self.assertLess(self.installer.index(':while ($dispatchAgain)'),
+                        self.installer.index(':if ($mode = "9")'))
+
     def test_cleanup_requires_validated_runtime_and_active_scheduler(self):
         code = self.code
         validated = code.index(':set runtimeValidated true;')
         self.assertLess(code.index('/system script run $scriptName;'), validated)
         self.assertLess(validated, code.index('/system scheduler enable $scheduleId;'))
         gate = code.index(':if (($failed = false) && ($runtimeValidated = true))')
-        self.assertLess(code.index(':error "Installation non validee";'), gate)
+        self.assertGreater(code.index(':set toor3869CloudInstallerLock false;'), gate)
         cleanup = code[gate:]
-        self.assertLess(cleanup.index('get $scheduleId disabled'), cleanup.index('/file remove'))
+        self.assertLess(cleanup.index('get $scheduleId disabled'), cleanup.index('$cleanupInstaller'))
         self.assertNotIn('/system scheduler disable', cleanup)
-        self.assertIn('AVERTISSEMENT', cleanup)
+        self.assertIn('----- Nettoyage incomplet -----', cleanup)
+
+    def test_retry_reinventories_and_retains_inputs(self):
+        code = self.code
+        loop = code.index(':while ($retry) do={')
+        self.assertLess(loop, code.index(':local scripts [/system script find'))
+        self.assertLess(code.index(':local installedSource "";'), loop)
+        self.assertEqual(code.count(':if ($inputsReady = false) do={'), 2)
+        self.assertIn(':if ($initialStateKnown = false) do={', code)
+        failure = code[code.index(':if ($failed) do={'):]
+        self.assertIn(':local owned [/system scheduler find where name=$schedulerName]', failure)
+        self.assertLess(failure.index('get $scheduleId comment'), failure.index('/system scheduler disable'))
+        self.assertLess(failure.index('get $scheduleId on-event'), failure.index('/system scheduler disable'))
+        self.assertIn('get $scheduleId disabled', failure)
+        self.assertIn('($key = 13) || ($key = 10)', failure)
+        self.assertIn('($key < 0) || ($key = 27) || ($key = 3)', failure)
+        self.assertIn(':set retry true;', failure)
+        self.assertNotIn('/system backup cloud remove-file', failure)
+        self.assertLess(failure.index(':set retry true;'), failure.index(':set password "";'))
+
+    def test_retry_cloud_checkpoint_and_job_safety(self):
+        code = self.code
+        checkpoint = code[code.index(':local cloudReady false;'):code.index(':set stage "confirmation";')]
+        for field in ['name', 'status', 'date', 'size']:
+            self.assertIn('get $saved ' + field, checkpoint)
+        self.assertIn('= $cloudDate', checkpoint)
+        self.assertIn('= $cloudSize', checkpoint)
+        cloud = code[code.index(':set stage "preparation sauvegarde Cloud";'):code.index(':set stage "installation script";')]
+        self.assertLess(cloud.index(':if ($cloudReady = false)'), cloud.index('/system backup cloud remove-file'))
+        self.assertLess(cloud.index(':error "Sauvegarde non confirmee"'), cloud.index(':set cloudDate'))
+        self.assertIn('conservation pour cette reprise', cloud)
+        safety = code[code.index(':set stage "mise en securite scheduler";'):code.index(':if ($mode = "2") do={')]
+        self.assertEqual(safety.count('/system script job print count-only'), 2)
+        self.assertLess(safety.index('/system script job'), safety.index('/system scheduler disable'))
+        self.assertLess(safety.index('/system scheduler disable'), safety.rindex('/system script job'))
 
     def test_cleanup_targets_only_canonical_installer(self):
         code = self.code
@@ -203,6 +451,109 @@ class Contracts(unittest.TestCase):
         readme = (ROOT / 'README.md').read_text()
         self.assertIn('dst-path="' + NAME + '.install.rsc"', readme)
         self.assertNotIn('toor3869_cloud_install.rsc', readme)
+
+    def test_cleanup_short_presentation(self):
+        code = self.code
+        title = code.index(':put "----- Nettoyage de l\'installation -----";')
+        message = code.index(':put "Suppression du fichier d\'installation.";')
+        remove = code.index('/file remove ($installerIds->0);')
+        self.assertLess(code.index(':if ([:len $installerIds] = 1) do={'), title)
+        self.assertLess(title, message)
+        self.assertLess(message, remove)
+        self.assertNotIn("Fichier d'installation supprime. Script et scheduler conserves.", code)
+        self.assertIn('Suppression non confirmee', code[remove:])
+        self.assertIn('----- Nettoyage incomplet -----', code[remove:])
+
+    def test_cleanup_retries_once_without_restarting_backup(self):
+        cleanup = self.cleanup
+        loop = cleanup
+        self.assertIn('($cleanupDone = false) && ($cleanupAttempt < 2)', loop)
+        self.assertIn(':set cleanupAttempt ($cleanupAttempt + 1);', loop)
+        self.assertLess(loop.index(':while'), loop.index('/file find where name=$installerFile'))
+        self.assertLess(loop.index('/file remove'), loop.index(':set cleanupDone true;'))
+        self.assertIn(':if ($cleanupAttempt < 2)', loop)
+        self.assertNotIn('/system script run', cleanup)
+        self.assertNotIn('/system backup cloud', cleanup)
+        self.assertNotRegex(cleanup, r'/system scheduler (?:set|enable|disable|remove)')
+        self.assertIn(':return $cleanupDone;', cleanup)
+        self.assertLess(self.code.index('Nettoyage non confirme apres deux essais'),
+                        self.code.index('----- Nettoyage incomplet -----'))
+
+    def test_cleanup_is_shared_and_confined(self):
+        self.assertEqual(self.installer.count('/file remove'), 1)
+        self.assertEqual(self.installer.count('[$cleanupInstaller $installerFile]'), 2)
+        self.assertIn(':local installerFile $1;', self.cleanup)
+        self.assertIn('$installerFile != "' + NAME + '.install.rsc"', self.cleanup)
+        self.assertLess(self.cleanup.index(':return false;'), self.cleanup.index('/file find'))
+        self.assertNotIn('/system', self.cleanup)
+
+    def test_lock_spans_dispatch_interruption_and_cleanup(self):
+        code = self.code
+        acquired = code.index(':set toor3869CloudInstallerLock true;')
+        released = code.index(':set toor3869CloudInstallerLock false;')
+        self.assertEqual(code.count(':set toor3869CloudInstallerLock true;'), 1)
+        self.assertEqual(code.count(':set toor3869CloudInstallerLock false;'), 1)
+        self.assertLess(acquired, code.index(':while ($dispatchAgain)'))
+        self.assertGreater(released, code.index('----- Installation interrompue -----'))
+        self.assertGreater(released, code.index('----- Nettoyage incomplet -----'))
+        self.assertGreater(released, code.index(':local cleanupDone [$cleanupInstaller'))
+
+    def test_cancelled_password_bypasses_failure_retry_prompt(self):
+        code = self.code
+        pair = code.split(':while ($passwordsMatch = false)', 1)[1].split(':local token', 1)[0]
+        self.assertEqual(pair.count(':set cancelled true;'), 2)
+        self.assertLess(pair.index(':if ($password = "")'), pair.index(':local confirmation'))
+        self.assertLess(pair.index(':if ($confirmation = "")'), pair.index(':if ($password = $confirmation)'))
+        failure = code.split(':if ($failed) do={', 1)[1].split(':set password "";', 1)[0]
+        self.assertEqual(failure.count(':if ($cancelled = false) do={'), 2)
+        self.assertLess(failure.index(':if ($cancelled = false)'), failure.index('----- Echec'))
+        self.assertLess(failure.rindex(':if ($cancelled = false)'), failure.index('Appuyez sur Entree'))
+
+    def test_uninstall_revalidates_after_prompt_and_before_removal(self):
+        code = self.uninstall
+        post = code.split(':set uninstallStage "desactivation scheduler";', 1)[1]
+        before_disable = post.split('/system scheduler disable', 1)[0]
+        for kind in ('script', 'scheduler'):
+            self.assertIn('/system ' + kind + ' find where name=', before_disable)
+        for guard in ('comment] != $scriptComment', 'comment] != $schedulerComment',
+                      'on-event] != $event', 'name] != $backupName',
+                      '/system script job print count-only'):
+            self.assertIn(guard, before_disable)
+        for kind in ('script', 'scheduler'):
+            region = code.split(':set uninstallStage "suppression ' + kind + '";', 1)[1]
+            before_remove = region.split('/system ' + kind + ' remove', 1)[0]
+            self.assertIn('/system ' + kind + ' find where name=', before_remove)
+            self.assertIn('comment] != $' + kind + 'Comment', before_remove)
+
+    def test_failure_reasons_are_literal_not_native_errors(self):
+        self.assertIn(':put ("Motif : " . $uninstallReason);', self.uninstall)
+        self.assertIn(':put ("Motif : " . $failureReason);', self.code)
+        for variable in ('uninstallReason', 'failureReason'):
+            assignments = re.findall(r':(?:local|set) ' + variable + r' ([^\n]+)', self.installer)
+            self.assertGreater(len(assignments), 4)
+            for value in assignments:
+                self.assertRegex(value, r'^"[^"$]*";$')
+
+    def test_final_summary_after_successful_cleanup(self):
+        code = self.code
+        gate = code.index(':if (($failed = false) && ($runtimeValidated = true))')
+        title = code.index(':put "----- Installation terminee -----";')
+        self.assertLess(gate, title)
+        self.assertLess(code.index(':error "Suppression non confirmee";'), title)
+        self.assertLess(title, code.index(':put "----- Nettoyage incomplet -----'))
+        self.assertIn(':local summaryStartTime "";', code[:gate])
+        self.assertIn(':local summaryInterval "";', code[:gate])
+        self.assertIn(':set summaryStartTime $startTime;', code[:gate])
+        self.assertIn(':set summaryInterval $interval;', code[:gate])
+        summary = code[title:]
+        for line in ('Sauvegarde Cloud : verifiee', 'Test du script   : reussi',
+                     'Scheduler        : actif'):
+            self.assertIn(':put "' + line + '";', summary)
+        self.assertIn(':put ("Heure de depart  : " . $summaryStartTime);', summary)
+        self.assertIn(':put ("Intervalle       : " . $summaryInterval);', summary)
+        border = ':put "' + '#' * 100 + '";'
+        self.assertEqual(code[gate:title].count(border), 1)
+        self.assertEqual(summary.count(border), 1)
 
 
 if __name__ == "__main__":

@@ -6,9 +6,15 @@
 
 ## État actuel
 
-- Essai demandé : séparateur de 100 tirets au-dessus de tous les sous-titres, une ligne vide
-  avant le titre, couleur identique. Aucun Markdown ni changement des opérations ; rendu Winbox
-  à valider avant de figer ce choix. Préparation locale non publiée.
+- Choix 2 validé par relecture MCP sur le RB2011 : scheduler Cloud unique, start-date 2026-01-01,
+  start-time 00:10:00, interval 06:00:00, disabled=false, prochain passage annoncé 06:10:00.
+  Installateur encore présent : conservation après planning seul confirmée. run-count=0 :
+  premier cycle automatique non validé. Pas de mutation du routeur pendant cette vérification.
+  Le maintien d'un scheduler initialement désactivé et la rotation restent à tester.
+
+- Exemple visuel clarifié : les 15 sous-titres sont maintenant entourés de deux bordures de
+  tirets de la largeur du titre, sans ligne vide intérieure. Couleurs conservées ; correction
+  locale non publiée. L'ancien séparateur isolé publié dans 0c25cf1 est remplacé.
 
 - Revue locale de tous les chemins d'affichage : espacements des confirmations, reprises,
   annulations, erreurs de saisie et rotation Cloud complétés ; aucun changement fonctionnel.

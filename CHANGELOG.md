@@ -33,6 +33,12 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- Sous-titres encadrés par deux lignes de tirets ajustées à leur largeur, sans ligne vide
+  intérieure, conformément à l'exemple visuel ; couleurs conservées.
+
+- Choix 2 validé par essai utilisateur et relecture MCP : heure 00:10:00, intervalle 6h,
+  scheduler actif et installateur conservé. TODO limité aux variantes encore non testées.
+
 - Essai visuel : ligne horizontale de tirets au-dessus de chaque sous-titre, dans sa couleur,
   séparée du titre par une ligne vide ; aucun marqueur Markdown affiché dans RouterOS.
 

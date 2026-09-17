@@ -82,7 +82,7 @@ class Contracts(unittest.TestCase):
         # Les contrats fonctionnels ignorent le double espacement visuel.
         self.installer = re.sub(r'(?m)^( *:put "";\n)\1', r'\1', self.installer)
         # Le cadre des sous-titres est teste separement sur le texte brut.
-        self.installer = re.sub(r'(?m)^ *:put "-{100}";\n *:put "";\n', '', self.installer)
+        self.installer = re.sub(r'(?m)^ *:put "-+";\n', '', self.installer)
         pattern = r'^    :local runtimeSource \( \\\n(.*?)^    \);$'
         matches = re.findall(pattern, self.installer, re.M | re.S)
         self.assertEqual(len(matches), 1)
@@ -262,15 +262,18 @@ class Contracts(unittest.TestCase):
         lines = self.colored_installer.splitlines()
         for index, line in enumerate(lines):
             if ':put "' in line and '----- ' in line:
-                self.assertEqual(lines[index - 1].strip(), ':put "";')
-                self.assertIn('-' * 100, lines[index - 2])
-                self.assertEqual(lines[index - 3].strip(), ':put "";')
+                match = re.search(r'(\\1B\[(?:31|33|36)m)(----- .* -----)\\1B\[0m', line)
+                self.assertIsNotNone(match)
+                border = ':put "' + match[1] + '-' * len(match[2]) + '\\1B[0m";'
+                self.assertEqual(lines[index - 1].strip(), border)
+                self.assertEqual(lines[index + 1].strip(), border)
+                self.assertEqual(lines[index - 2].strip(), ':put "";')
                 if 'terminee -----' not in line:
-                    self.assertEqual(lines[index - 4].strip(), ':put "";')
+                    self.assertEqual(lines[index - 3].strip(), ':put "";')
                 else:
-                    self.assertIn('#' * 100, lines[index - 4])
-                self.assertEqual(lines[index + 1].strip(), ':put "";')
-                self.assertNotEqual(lines[index + 2].strip(), ':put "";')
+                    self.assertIn('#' * 100, lines[index - 3])
+                self.assertEqual(lines[index + 2].strip(), ':put "";')
+                self.assertNotEqual(lines[index + 3].strip(), ':put "";')
 
     def test_uninstall_spacing_after_confirmation_and_cloud(self):
         self.assertIn('} else={\n                        :put "";\n'

@@ -92,6 +92,9 @@ ftp \
   les étapes. Ne pas cumuler les séparateurs de fin et de début de deux étapes successives.
   Dans les cadres finaux, conserver une seule ligne vide près des bordures et entre paragraphes,
   deux à l'extérieur. Tester les vrais `:put` avant toute normalisation du texte par les tests.
+- Encadrer chaque sous-titre console par deux lignes de tirets, immédiatement au-dessus et
+  au-dessous, sans ligne vide dans ce cadre. Leur longueur égale celle du titre `----- Texte -----`
+  et leur couleur est identique au titre. Ne pas remplacer ce cadre par une ligne isolée.
 
 ## Installation, commentaires et sécurité
 

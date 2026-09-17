@@ -7,7 +7,21 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ## 2026-09-18
 
+### Corrigé
+
+- Comptages de tâches silencieux dans l'installateur et le script permanent : suppression
+  des nombres parasites issus de `print count-only`, sans retirer les contrôles de concurrence.
+- Sorties normales par fin de branche pour quitter, annuler ou terminer la désinstallation,
+  sans `return 0` global ; erreurs réelles conservées. Confirmation native encore à réaliser.
+
 ### Modifié
+
+- Messages de l'installateur colorés : cyan pour les titres, vert pour les succès, jaune pour
+  les avertissements et rouge pour les erreurs ; reset ANSI après chaque message, saisies normales.
+  Rendu Winbox à valider ; script permanent et opérations de sauvegarde inchangés.
+
+- Fin de désinstallation encadrée par les mêmes séparateurs que la fin d'installation,
+  avec des lignes vides pour démarquer le résultat.
 
 - README du module Cloud aéré : lancement en premier, menu et paramètres en tableaux,
   sections dédiées aux erreurs et à la désinstallation, détails secondaires repliables.

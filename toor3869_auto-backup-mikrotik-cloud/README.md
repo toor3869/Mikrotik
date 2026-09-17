@@ -46,6 +46,10 @@ Copier le bloc entier :
 Le fichier est téléchargé puis exécuté. Si le téléchargement échoue, l'import ne démarre pas.
 Suivre ensuite les questions affichées dans le terminal.
 
+L'habillage couleur distingue les titres (cyan), succès (vert), avertissements
+(jaune) et erreurs (rouge). Les explications et saisies gardent le style normal.
+Les séquences ANSI sont réinitialisées après chaque message ; leur rendu reste à tester dans Winbox.
+
 &nbsp;
 
 ## 02 Menu

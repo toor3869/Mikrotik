@@ -2,7 +2,7 @@
 #####                                                                                          #####
 #####                                  Mikrotik - Tests locaux                                 #####
 #####                                     test_contracts.py                                    #####
-#####                             VERSION 2026-09-17 - BY TOOR3869                             #####
+#####                             VERSION 2026-09-18 - BY TOOR3869                             #####
 #####                                                                                          #####
 ####################################################################################################
 
@@ -74,7 +74,11 @@ def balanced(text):
 
 class Contracts(unittest.TestCase):
     def setUp(self):
-        self.installer = INSTALLER.read_text()
+        self.colored_installer = INSTALLER.read_text()
+        # Les contrats fonctionnels lisent le meme texte, sans son habillage ANSI.
+        self.installer = re.sub(r'\\1B\[(?:0|31|32|33|36)m', '', self.colored_installer)
+        self.installer = re.sub(r':put \("" \. (\([^\n]+\)) \. ""\);',
+                                r':put \1;', self.installer)
         pattern = r'^    :local runtimeSource \( \\\n(.*?)^    \);$'
         matches = re.findall(pattern, self.installer, re.M | re.S)
         self.assertEqual(len(matches), 1)
@@ -97,7 +101,7 @@ class Contracts(unittest.TestCase):
             lines = data.decode().split("\n")
             self.assertEqual(lines[:8], [
                 "#" * 100, "#####", "##### Mikrotik Script",
-                "##### " + name, "##### VERSION 2026-09-17 - BY TOOR3869",
+                "##### " + name, "##### VERSION " + "2026-09-18" + " - BY TOOR3869",
                 "#####", "#" * 100, "",
             ])
             self.assertTrue(lines[8])
@@ -114,7 +118,7 @@ class Contracts(unittest.TestCase):
         lines = ["", "#" * 100, "#####",
                  "##### Installation - Sauvegarde automatique MikroTik Cloud",
                  "##### " + INSTALLER.name,
-                 "##### VERSION 2026-09-17 - BY TOOR3869",
+                 "##### VERSION 2026-09-18 - BY TOOR3869",
                  "#####", "#" * 100, ""]
         banner = "\n".join('    :put "' + line + '";' for line in lines)
         self.assertEqual(self.code.count(banner), 1)
@@ -145,6 +149,42 @@ class Contracts(unittest.TestCase):
     def test_lexical_balance(self):
         balanced(self.source)
         balanced(self.installer)
+        balanced(self.colored_installer)
+
+    def test_console_colors_reset_on_each_message(self):
+        colored = [line for line in self.colored_installer.splitlines() if r'\1B[' in line]
+        self.assertGreater(len(colored), 50)
+        for line in colored:
+            self.assertIn(':put ', line)
+            self.assertEqual(re.findall(r'\\1B\[(\d+)m', line)[-1], '0')
+            self.assertEqual(len(re.findall(r'\\1B\[0m', line)), 1)
+            self.assertNotIn('/terminal ask', line)
+            self.assertNotIn('$password', line)
+            self.assertNotIn('$confirmation', line)
+        self.assertNotIn('\\1B[', self.source)
+        self.assertNotIn('\x1b', self.colored_installer)
+
+    def test_console_palette_semantics(self):
+        examples = {
+            '36': '----- Choix de l\'operation -----',
+            '32': 'Test termine avec succes.',
+            '33': 'Aucune sauvegarde Cloud ne sera conservee.',
+            '31': '----- Echec de l\'operation -----',
+        }
+        for color, message in examples.items():
+            self.assertIn(':put "\\1B[' + color + 'm' + message + '\\1B[0m";',
+                          self.colored_installer)
+        self.assertIn(':put "Recherche des elements deja presents sur ce MikroTik";',
+                      self.colored_installer)
+
+    def test_silent_counts_and_normal_import_completion(self):
+        self.assertNotIn('print count-only', self.installer)
+        self.assertNotIn(':return 0;', self.installer)
+        self.assertEqual(self.source.count('[:len [/system script job find where script=$scriptName]]'), 1)
+        self.assertEqual(self.code.count('[:len [/system script job find where script=$scriptName]]'), 2)
+        self.assertEqual(self.uninstall.count('[:len [/system script job find where script=$scriptName]]'), 4)
+        self.assertIn(':put "Aucune modification.";\n    } else={', self.code)
+        self.assertIn('} else={\n                # Fin du parcours de desinstallation.', self.installer)
 
     def test_uninstall_confirmation_and_ownership(self):
         code = self.uninstall
@@ -153,10 +193,11 @@ class Contracts(unittest.TestCase):
         self.assertLess(confirm, disable)
         for guard in ('comment] != $scriptComment', 'comment] != $schedulerComment',
                       'on-event] != $event', 'name] != $backupName',
-                      '/system script job print count-only'):
+                      '/system script job find'):
             self.assertIn(guard, code[:confirm])
-        self.assertIn(':return 0;', code[confirm:disable])
-        self.assertIn(':set toor3869CloudInstallerLock false;', code[confirm:disable])
+        self.assertIn('Desinstallation annulee. Aucune modification.', code[confirm:disable])
+        self.assertIn('} else={', code[confirm:disable])
+        self.assertNotIn(':return 0;', code)
         self.assertNotIn('/system script job remove', code)
         self.assertNotIn('upload-file', code)
         self.assertNotIn('/system scheduler enable', code)
@@ -167,7 +208,7 @@ class Contracts(unittest.TestCase):
                     '/system scheduler remove', '/system script remove', '$cleanupInstaller $installerFile']
         positions = [code.index(command) for command in commands]
         self.assertEqual(positions, sorted(positions))
-        self.assertIn('/system script job print count-only', code[positions[0]:positions[1]])
+        self.assertIn('/system script job find', code[positions[0]:positions[1]])
         self.assertIn('name] != $backupName', code[positions[0]:positions[1]])
         for message, start, end in [('Suppression Cloud non confirmee', positions[1], positions[2]),
                                      ('Suppression scheduler non confirmee', positions[2], positions[3]),
@@ -179,6 +220,15 @@ class Contracts(unittest.TestCase):
                         code.index('----- Desinstallation terminee -----'))
         self.assertIn('Les suppressions deja effectuees ne sont pas annulees.', code)
         self.assertIn(':set toor3869CloudInstallerLock false;', code[positions[4]:])
+
+    def test_uninstall_success_frame(self):
+        code = self.uninstall
+        start = code.index(':if ($cleaned = false) do={ :error "Nettoyage incomplet"; };')
+        end = code.index('} on-error={', start)
+        lines = ['', '#' * 100, '', '----- Desinstallation terminee -----', '',
+                 "Script, scheduler, sauvegarde Cloud et fichier d'installation supprimes.",
+                 '', '#' * 100]
+        self.assertEqual(re.findall(r':put "(.*)";', code[start:end]), lines)
 
     def test_planning_independent_retry_loops(self):
         code = self.code
@@ -285,7 +335,7 @@ class Contracts(unittest.TestCase):
         self.assertIn("disabled=yes", code[scheduler:run])
         self.assertIn('/system scheduler disable $scheduleId', code[enable:])
         self.assertIn('[/system backup cloud get $current date] = $previousDate', self.source)
-        self.assertIn("job print count-only", self.source)
+        self.assertIn("job find", self.source)
 
     def test_cloud_creation_and_deletion_guards(self):
         code = self.code
@@ -343,7 +393,7 @@ class Contracts(unittest.TestCase):
         lines = ["", "----- Test du script de sauvegarde -----", "",
                  "Execution du script pour verifier son fonctionnement.",
                  "Cette operation peut prendre plusieurs minutes. Merci de patienter.", ""]
-        block = "\n".join('                    :put "' + line + '";' for line in lines)
+        block = "\n".join('                            :put "' + line + '";' for line in lines)
         self.assertIn(block, code)
         run = code.index('/system script run $scriptName;')
         validated = code.index(':set runtimeValidated true;')
@@ -436,7 +486,7 @@ class Contracts(unittest.TestCase):
         self.assertLess(cloud.index(':error "Sauvegarde non confirmee"'), cloud.index(':set cloudDate'))
         self.assertIn('conservation pour cette reprise', cloud)
         safety = code[code.index(':set stage "mise en securite scheduler";'):code.index(':if ($mode = "2") do={')]
-        self.assertEqual(safety.count('/system script job print count-only'), 2)
+        self.assertEqual(safety.count('/system script job find'), 2)
         self.assertLess(safety.index('/system script job'), safety.index('/system scheduler disable'))
         self.assertLess(safety.index('/system scheduler disable'), safety.rindex('/system script job'))
 
@@ -517,7 +567,7 @@ class Contracts(unittest.TestCase):
             self.assertIn('/system ' + kind + ' find where name=', before_disable)
         for guard in ('comment] != $scriptComment', 'comment] != $schedulerComment',
                       'on-event] != $event', 'name] != $backupName',
-                      '/system script job print count-only'):
+                      '/system script job find'):
             self.assertIn(guard, before_disable)
         for kind in ('script', 'scheduler'):
             region = code.split(':set uninstallStage "suppression ' + kind + '";', 1)[1]

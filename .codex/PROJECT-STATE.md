@@ -6,6 +6,19 @@
 
 ## État actuel
 
+- Habillage ANSI local : titres cyan, succès verts, avertissements jaunes et erreurs rouges.
+  Reset sur chaque message ; opérations de sauvegarde inchangées.
+  Publication autorisée avec les corrections de sortie et de comptage ; rendu Winbox à tester.
+
+- Deuxième essai utilisateur : désinstallation sur RB2011 arrivée aux confirmations d'absence
+  Cloud, scheduler et script, puis nettoyage. Sortie « Script Error: 0 » corrigée statiquement ;
+  ne pas confondre ce défaut de sortie avec une preuve d'échec des suppressions.
+  Encadrement du message de fin et branches de sortie normale prêts pour publication.
+  Installation suivante réussie selon la console utilisateur : Cloud créé, test de remplacement
+  réussi, scheduler activé et installateur supprimé. Pas de nouveau contrôle MCP pendant cette passe.
+  Sept comptages de jobs remplacés par `:len [find ...]`, dont un dans le script permanent.
+  Trois retours globaux supprimés ; retours des fonctions conservés. Vérification native restante.
+
 - README du module restructuré pour la lecture : sept sections avec sommaire, tableaux courts,
   détails repliables et risques visibles. Documentation uniquement, script inchangé par cette passe.
 
@@ -13,7 +26,7 @@
   Pas de workflow de construction ni de déploiement : lancement manuel depuis le README.
 - Module Cloud autonome : seul l'installateur interactif `.install.rsc` est conservé ; le script
   permanent est embarqué, sans fichier source séparé ni configuration propre à CPE01.
-- Trente-cinq tests statiques réussis pour la reprise, le nettoyage et la désinstallation.
+- Trente-neuf tests statiques pour la reprise, le nettoyage, les sorties et les couleurs.
   Premier parcours terminé selon l'utilisateur ; état Cloud,
   script et scheduler contrôlés via MCP. Premier cycle automatique et restauration restent à tester.
 - Bannière de début en console intégrée avant le menu ; deuxième parcours à tester en natif.

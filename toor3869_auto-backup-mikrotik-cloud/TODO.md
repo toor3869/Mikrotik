@@ -2,6 +2,12 @@
 
 ## À valider
 
+- [ ] Vérifier les couleurs ANSI dans Winbox : cyan, vert, jaune, rouge et retour au style normal
+      après chaque message ; confirmer que les saisies restent lisibles.
+
+- [ ] Vérifier les sorties normales après choix 0, annulation et succès du choix 9 : aucune
+      erreur « Script Error: 0 » ; confirmer aussi l'absence des compteurs parasites 0/1.
+
 - [ ] Valider Échap sur les deux saisies de mot de passe : accès direct au menu d'interruption,
       sans message d'échec ni prompt intermédiaire de réessai.
 - [ ] Tester le verrou jusqu'à la sortie, la routine commune de nettoyage et la désinstallation
@@ -24,7 +30,8 @@
 
 - [ ] Valider la syntaxe native et les permissions sur un MikroTik de test autorisé.
 - [ ] Tester dans Winbox la saisie invisible, Entrée, Retour arrière, Echap, expiration et Ctrl+C.
-- [ ] Tester la première sauvegarde, le remplacement, le test immédiat et le premier cycle planifié.
+- [ ] Vérifier le premier cycle planifié ; première sauvegarde et test immédiat réussis selon
+      l'essai utilisateur du 2026-09-18, avant la correction des comptages silencieux.
 - [ ] Tester les états partiels, doublons, objets homonymes et réinstallation sans doublon.
 - [ ] Tester le planning seul et la rotation du mot de passe avec confirmation de suppression.
 - [ ] Simuler un échec réseau, de droits et d'envoi Cloud ; vérifier l'arrêt sans activation indue.

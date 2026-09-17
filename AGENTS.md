@@ -78,6 +78,10 @@ ftp \
   les valeurs, guillemets, séparateurs, ordre et espaces significatifs ; ne pas convertir une liste
   en plusieurs commandes. Placer les commentaires hors des commandes poursuivies.
 - Vérifier la commande logique reconstituée ; distinguer contrôle statique et exécution RouterOS.
+- Pour compter les objets sans affichage, utiliser `:len [find ...]`, pas `print count-only` :
+  ce dernier peut afficher les compteurs internes dans la console pendant un import.
+- Terminer normalement les branches d'un installateur importé ; ne pas utiliser `:return 0`
+  comme sortie globale. Réserver les retours de valeur aux fonctions et les erreurs aux échecs.
 - Ne jamais compacter le corps d'un script. Distinguer le fichier source de sa sérialisation dans
   `source="..."` : des séparateurs encodés en `\r\n` peuvent préserver les lignes dans Winbox.
   Une API attendant le corps brut doit recevoir de vrais retours à la ligne.

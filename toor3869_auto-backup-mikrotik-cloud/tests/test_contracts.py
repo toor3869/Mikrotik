@@ -693,6 +693,16 @@ class Contracts(unittest.TestCase):
             index = next(i for i, line in enumerate(lines) if message in line)
             self.assertEqual(lines[index + 1].strip(), ':put "";')
 
+    def test_planning_errors_spacing_and_color(self):
+        lines = self.colored_installer.splitlines()
+        for prefix, count in (('Heure invalide.', 1), ('Intervalle invalide.', 2)):
+            index = next(i for i, line in enumerate(lines) if prefix in line)
+            self.assertEqual(lines[index - 1].strip(), ':put "";')
+            self.assertEqual(lines[index + count].strip(), ':put "";')
+            for line in lines[index:index + count]:
+                self.assertIn(r'\1B[31m', line)
+                self.assertIn(r'\1B[0m', line)
+
     def test_zero_cancellation_before_validation_and_mutation(self):
         code = self.installer
         guard = ':if (($value = "0") && ($invalid = false)) do={ :return ""; };'

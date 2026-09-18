@@ -2,7 +2,6 @@
 
 ## À valider
 
-- [ ] Revalider l'expiration après une minute sans touche, sur les deux saisies de mot de passe.
 - [ ] Tester les limites et saisies horaires invalides : borne 23:59:59,
       intervalle nul ou supérieur à 1d, acceptation de 1d et maintien de l'heure déjà validée.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.

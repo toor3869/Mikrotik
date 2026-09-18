@@ -548,7 +548,9 @@
                                         };
                                     } on-error={ :set hourAccepted false; };
                                     :if ($hourAccepted = false) do={
+                                        :put "";
                                         :put "\1B[31mHeure invalide. Saisissez une heure entre 00:00:00 et 23:59:59.\1B[0m";
+                                        :put "";
                                     };
                                 };
                                 :put "";
@@ -578,8 +580,10 @@
                                         };
                                     } on-error={ :set intervalAccepted false; };
                                     :if ($intervalAccepted = false) do={
+                                        :put "";
                                         :put "\1B[31mIntervalle invalide. Saisissez une duree superieure a zero\1B[0m";
-                                        :put "et inferieure ou egale a 1d, par exemple 30m, 1h, 6h ou 1d.";
+                                        :put "\1B[31met inferieure ou egale a 1d, par exemple 30m, 1h, 6h ou 1d.\1B[0m";
+                                        :put "";
                                     };
                                 };
                             };

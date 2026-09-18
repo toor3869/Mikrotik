@@ -6,15 +6,25 @@
 
 ## État actuel
 
+- Historique Cloud déplacé dans toor3869_auto-backup-mikrotik-cloud/CHANGELOG.md ; seules
+  la licence, les règles communes et la réorganisation restent dans le changelog racine.
+  Utiliser désormais le changelog du module pour les corrections de l'installateur.
+
+- Heure 25:00:00 refusée avec nouvelle demande d'heure, confirmé par capture utilisateur.
+  Espacement corrigé localement autour des erreurs d'heure et d'intervalle ; message
+  d'intervalle uniformément rouge. Autres bornes horaires et rendu corrigé restant à valider.
+
 - Test expiration en échec : utilisateur resté plus de cinq minutes sans sortie. Le contrôle
   du temps était limité aux retours négatifs/non numériques. Correction : timeout=1m et
   contrôle temporel avant toute classification du retour, effacement de la saisie et message
-  explicite avant annulation. À revalider en natif ; si inkey ne rend jamais la main malgré
-  timeout, ce contrôle ne suffit pas. Aucun ajout de scheduler ni modification du routeur.
+  explicite avant annulation. Première saisie validée par la capture utilisateur sur 1dec281 :
+  message après une minute puis menu d'interruption, sans mutation annoncée. Même résultat
+  confirmé par la seconde capture à la confirmation du mot de passe : les deux saisies sont
+  validées, tâche retirée du TODO. Aucun ajout de scheduler ni mutation du routeur par l'agent.
 
 - Retour arrière validé par l'essai utilisateur : suppression du dernier caractère puis
   confirmation correspondante acceptée. Refus 0 à EFFACER : aucune mutation annoncée,
-  arrivée au menu d'interruption. Expiration de la saisie encore à tester.
+  arrivée au menu d'interruption. Expiration des deux saisies également validée.
 
 - Confirmation différente : message de refus et reprise de la première saisie validés par
   la capture utilisateur. Ligne vide publiée dans 35f6d65 puis validée dans Winbox.

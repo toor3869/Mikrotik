@@ -129,10 +129,16 @@ ftp \
 ## Documentation et contrôles
 
 - Lors du travail fonctionnel sur une automatisation, maintenir dans son dossier un `README.md`
-  humain et concis, un `TODO.md` limité aux actions restantes et des tests sous `tests/`.
+  humain et concis, un `TODO.md` limité aux actions restantes, un `CHANGELOG.md` propre au
+  module et des tests sous `tests/`.
   Documenter les fichiers réellement présents ; ne pas inventer d'importeur ou de commande publiée.
 - Réserver `AGENTS.md` aux règles, `.codex/PROJECT-STATE.md` à l'état et au point de reprise,
   et `CHANGELOG.md` à l'historique. Ne pas doubler le README par un second document du même rôle.
+- Consigner chaque changement d'un script dans le `CHANGELOG.md` de son dossier, jamais
+  dans le changelog racine. Réserver ce dernier aux changements transversaux du dépôt
+  (licence, organisation, règles communes). Ne pas dupliquer les entrées entre ces fichiers.
+- Lors d'un reclassement, préserver les dates et le contenu de l'historique ; corriger les
+  liens et séparer les entrées transversales sans supprimer l'historique d'un module.
 - Pour les TODO, limiter les lignes à 100 caractères et indenter les continuations de six espaces.
   Retirer les tâches terminées uniquement après vérification ; ne pas inventer de tâches de remplissage.
 - Contrôler les bannières, ASCII, UTF-8/LF, noms, commentaires, références et concordance entre

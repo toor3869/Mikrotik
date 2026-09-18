@@ -115,10 +115,12 @@
             :if ($invalid) do={
                 :put "";
                 :put "\1B[31mMot de passe invalide. Utilisez 8 a 128 caracteres ASCII imprimables.\1B[0m";
+                :put "";
             } else={
                 :if ([:len $value] < 8) do={
                     :put "";
                     :put "\1B[31mMot de passe trop court. Saisissez au moins 8 caracteres.\1B[0m";
+                    :put "";
                 } else={ :return $value; };
             };
             :set value "";

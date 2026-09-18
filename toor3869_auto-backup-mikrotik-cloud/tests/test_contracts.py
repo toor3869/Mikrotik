@@ -659,6 +659,12 @@ class Contracts(unittest.TestCase):
             self.assertEqual(lines[index - 1].strip(), ':put "";')
             self.assertNotEqual(lines[index - 2].strip(), ':put "";')
 
+    def test_password_error_separated_from_retry_prompt(self):
+        lines = self.colored_installer.splitlines()
+        for message in ('Mot de passe invalide.', 'Mot de passe trop court.'):
+            index = next(i for i, line in enumerate(lines) if message in line)
+            self.assertEqual(lines[index + 1].strip(), ':put "";')
+
     def test_zero_cancellation_before_validation_and_mutation(self):
         code = self.installer
         guard = ':if (($value = "0") && ($invalid = false)) do={ :return ""; };'

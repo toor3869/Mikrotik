@@ -9,6 +9,8 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Ligne vide après les erreurs de mot de passe invalide ou trop court, avant la nouvelle saisie.
+
 - Annulation explicite par `0` puis Entrée pour les horaires et les deux saisies de mot de
   passe. Menus de reprise et de sortie unifiés avec `terminal ask`, sans dépendre d'Échap.
   Annulation sans suppression automatique ; valeurs vides du planning conservées.
@@ -40,6 +42,13 @@ VERSION 2026-09-18 - BY TOOR3869
   sans `return 0` global ; erreurs réelles conservées. Confirmation native encore à réaliser.
 
 ### Modifié
+
+- Refus d'un mot de passe de 129 caractères et reprise de la saisie validés par l'essai
+  utilisateur ; cas retiré du TODO.
+
+- Essais d'annulation validés par les sorties utilisateur : menu principal, saisie de l'heure,
+  intervalle, deux saisies du mot de passe, sortie sans nettoyage et refus de désinstallation.
+  Sorties normales sans erreur ; TODO réduit aux variantes restant à tester.
 
 - Rotation du mot de passe validée par l'essai utilisateur : recréation Cloud, test du script,
   réactivation et nettoyage réussis ; nouveau mot de passe confirmé dans le script par

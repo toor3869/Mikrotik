@@ -6,6 +6,20 @@
 
 ## État actuel
 
+- Ligne vide ajoutée après les erreurs de mot de passe invalide ou trop court pour séparer
+  la nouvelle saisie ; test statique dédié. Correction locale, non publiée.
+
+- Mot de passe de 129 caractères : refus et nouvelle demande de saisie validés par la sortie
+  utilisateur. Cas retiré du TODO ; limite exacte de 128 et autres saisies non déduites.
+
+- Sorties utilisateur de la version 983f4b8 : choix 0, annulation à l'heure, annulation à la
+  première saisie du mot de passe, sortie 0 du menu d'interruption et refus 0 du choix 9
+  terminés normalement, sans erreur ni suppression annoncée. Les inventaires suivants
+  retrouvent script, scheduler actif et Cloud. Essais complémentaires confirmés : annulation
+  à l'intervalle et à la confirmation du mot de passe, sans mutation annoncée ni erreur,
+  puis sortie 0 sans nettoyage. Les quatre saisies sont validées pour cette annulation.
+  Conservation du fichier non prouvée par les téléchargements.
+
 - Test utilisateur : Échap sans effet dans le menu et les horaires du choix 2. Correction
   locale : 0 puis Entrée annule les horaires et les deux saisies de mot de passe ; menus de
   reprise/sortie via terminal ask. Annulation avant mutation des saisies, sans nettoyage

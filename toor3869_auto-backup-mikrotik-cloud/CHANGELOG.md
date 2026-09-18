@@ -60,6 +60,13 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- Sous-titres sur trois lignes de 100 caractères : bordures en `#`, ligne médiane bordée
+  de `###`, texte centré entre des tirets, tiret supplémentaire à gauche si nécessaire.
+  Couleurs et espacement extérieur conservés ; aucun changement fonctionnel.
+
+- Nouveau cadre final de désinstallation validé par la capture utilisateur : suppressions
+  confirmées, message centré et sortie normale.
+
 - Récapitulatifs de fin d'installation, de planning et de désinstallation entièrement encadrés
   de `#` sur 100 caractères ; textes et valeurs centrés, couleurs préservées. Présentation seule.
 

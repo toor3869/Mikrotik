@@ -6,18 +6,25 @@
 
 ## État actuel
 
+- Préparation locale non publiée : 13 sous-titres sur trois lignes de 100 caractères,
+  bordures # et ligne centrale ### avec tirets de centrage (supplément à gauche si impair).
+  Tests de largeur, centrage, couleur et espacements adaptés ; rendu Winbox à valider.
+
 - Dépôt public toor3869/Mikrotik, licence MIT, un dossier autonome par fonction.
 - Module travaillé : toor3869_auto-backup-mikrotik-cloud. Seul le fichier .install.rsc est
   distribué ; il embarque la source du script permanent. Aucun secret ni paramètre de site.
-- Dernier code publié : 123e4b22e8994a67bdb8ef4a76579d26635c46d1 sur main.
+- Dernier code publié : 6eda62e9e219165ab6457e54b857c6637b298c1f sur main.
   Aucun workflow de déploiement ; exécution manuelle depuis le README.
 - 54 tests statiques réussis sur la préparation actuelle. Ils ne remplacent pas RouterOS.
-- Documentation de reprise publiée dans 14b8ba3. Nouvelle modification locale non publiée :
+- Documentation de reprise publiée dans 14b8ba3. Présentation publiée dans 6eda62e :
   trois récapitulatifs finaux entièrement fermés en # et centrés, valeurs variables comprises.
-  54 tests statiques ; rendu Winbox restant à valider. Aucun changement des opérations Cloud.
+  rendu Winbox validé pour la désinstallation, autres cadres restant à valider.
+  Aucun changement des opérations Cloud.
   Le statut reste expérimental : restauration, cycle planifié et cas d'incident non validés.
-- Dernier état fourni par l'utilisateur : scheduler actif, heure 00:00:00 et intervalle 6h.
-  Ce constat vient de la sortie du choix 2, pas d'une nouvelle interrogation MCP.
+- Dernier état fourni par l'utilisateur : désinstallation réussie, Cloud, scheduler et script
+  absents, installateur supprimé et sortie normale. Cadre final fermé et centré validé pour
+  la désinstallation ; installation et planning restant à vérifier avec ce nouveau rendu.
+  Ce constat vient de la capture utilisateur, pas d'une nouvelle interrogation MCP.
 - Normalisation globale complète non réalisée ; .gitattributes absent.
 
 ## Décisions validées

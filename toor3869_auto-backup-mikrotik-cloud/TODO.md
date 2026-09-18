@@ -2,7 +2,8 @@
 
 ## À valider
 
-- [ ] Valider les cadres finaux fermés et centrés : installation, planning et désinstallation.
+- [ ] Valider le nouveau rendu des sous-titres sur 100 caractères dans Winbox.
+- [ ] Valider les cadres finaux fermés et centrés : installation et planning.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.
 - [ ] Tester le menu après interruption : Entrée seule quitte sans nettoyage ; 9 puis Entrée
       rejoint la désinstallation avec nouvel inventaire et confirmation OUI obligatoire.

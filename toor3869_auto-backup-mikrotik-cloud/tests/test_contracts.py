@@ -82,6 +82,9 @@ class Contracts(unittest.TestCase):
         # Le centrage des cadres est controle separement sur la source brute.
         self.installer = re.sub(r':put \[\$frameLine (.+) "(?:0|32|33|36)"\];',
                                 r':put \1;', self.installer)
+        self.installer = re.sub(
+            r'(?m)^([ ]*):put "#{100}";\n\1:put "### -+ (.*?) -+ ###";\n\1:put "#{100}";',
+            r'\1:put "----- \2 -----";', self.installer)
         # Les contrats fonctionnels ignorent le double espacement visuel.
         self.installer = re.sub(r'(?m)^( *:put "";\n)\1', r'\1', self.installer)
         # Le cadre des sous-titres est teste separement sur le texte brut.
@@ -184,6 +187,10 @@ class Contracts(unittest.TestCase):
             '31': '----- Echec de l\'operation -----',
         }
         for color, message in examples.items():
+            if message.startswith('----- '):
+                title = message[6:-6]
+                count = 90 - len(title)
+                message = '### ' + '-' * ((count + 1) // 2) + ' ' + title + ' ' + '-' * (count // 2) + ' ###'
             self.assertIn(':put "\\1B[' + color + 'm' + message + '\\1B[0m";',
                           self.colored_installer)
         self.assertIn(':put "Recherche des elements deja presents sur ce MikroTik";',
@@ -268,18 +275,20 @@ class Contracts(unittest.TestCase):
 
     def test_console_double_spacing(self):
         lines = self.colored_installer.splitlines()
+        self.assertEqual(sum('m### -' in line for line in lines), 13)
+        self.assertNotRegex(self.colored_installer, r':put "\\1B\[\d+m----- ')
         for index, line in enumerate(lines):
-            if ':put "' in line and '----- ' in line:
-                match = re.search(r'(\\1B\[(?:31|33|36)m)(----- .* -----)\\1B\[0m', line)
+            if ':put "' in line and 'm### -' in line:
+                match = re.search(r'(\\1B\[(?:31|33|36)m)(### (-+) (.*?) (-+) ###)\\1B\[0m', line)
                 self.assertIsNotNone(match)
-                border = ':put "' + match[1] + '-' * len(match[2]) + '\\1B[0m";'
+                self.assertEqual(len(match[2]), 100)
+                self.assertEqual(len(match[3]), (90 - len(match[4]) + 1) // 2)
+                self.assertEqual(len(match[5]), (90 - len(match[4])) // 2)
+                border = ':put "' + match[1] + '#' * 100 + '\\1B[0m";'
                 self.assertEqual(lines[index - 1].strip(), border)
                 self.assertEqual(lines[index + 1].strip(), border)
                 self.assertEqual(lines[index - 2].strip(), ':put "";')
-                if 'terminee -----' not in line:
-                    self.assertEqual(lines[index - 3].strip(), ':put "";')
-                else:
-                    self.assertIn('#' * 100, lines[index - 3])
+                self.assertEqual(lines[index - 3].strip(), ':put "";')
                 self.assertEqual(lines[index + 2].strip(), ':put "";')
                 self.assertNotEqual(lines[index + 3].strip(), ':put "";')
 

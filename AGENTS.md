@@ -97,9 +97,14 @@ ftp \
   Bordures et titre cyan, résultats verts, avertissements jaunes, informations normales.
   Les cadres des étapes et menus restent inchangés. Tester les vrais affichages avant toute
   normalisation du texte par les tests.
-- Encadrer chaque sous-titre console par deux lignes de tirets, immédiatement au-dessus et
-  au-dessous, sans ligne vide dans ce cadre. Leur longueur égale celle du titre `----- Texte -----`
-  et leur couleur est identique au titre. Ne pas remplacer ce cadre par une ligne isolée.
+- Chaque sous-titre console occupe trois lignes de 100 caractères, sans ligne vide intérieure.
+  Bordures supérieure et inférieure : exactement 100 `#`. Ligne centrale : `### `, tirets
+  gauches, une espace, texte, une espace, tirets droits, ` ###`. Les trois lignes gardent
+  la couleur du sous-titre. Conserver deux lignes vides avant et une après le bloc.
+- Calculer le nombre total de tirets comme `90 - longueur du texte` ; placer la moitié
+  arrondie au supérieur à gauche et la moitié arrondie à l'inférieur à droite. Vérifier les
+  100 caractères et le centrage hors séquences ANSI. Cette règle ne change pas les grands
+  récapitulatifs finaux ni les bannières des fichiers source.
 - Pour la bannière de début affichée en console uniquement, utiliser sept lignes de 100
   caractères : bordures pleines, intérieur de 90 caractères entre cinq `#` de chaque côté.
   Centrer les trois textes, avec l'espace supplémentaire à gauche si nécessaire ; conserver

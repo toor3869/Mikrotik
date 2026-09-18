@@ -292,6 +292,16 @@ class Contracts(unittest.TestCase):
                 self.assertEqual(lines[index + 2].strip(), ':put "";')
                 self.assertNotEqual(lines[index + 3].strip(), ':put "";')
 
+    def test_uninstall_failure_paragraph_spacing(self):
+        block = self.colored_installer.split(':set uninstallFailed true;', 1)[1].split(
+            ':set toor3869CloudInstallerLock false;', 1)[0]
+        lines = [line.strip() for line in block.splitlines()]
+        for marker in ('Motif : ', 'Les suppressions deja effectuees',
+                       "Conservez l'installateur"):
+            index = next(i for i, line in enumerate(lines) if marker in line)
+            self.assertEqual(lines[index + 1], ':put "";')
+        self.assertEqual(lines[index + 2], ':put "";')
+
     def test_uninstall_spacing_after_confirmation_and_cloud(self):
         self.assertIn('} else={\n                        :put "";\n'
                       '                        :set uninstallStage "desactivation scheduler";',

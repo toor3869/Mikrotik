@@ -9,6 +9,9 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Erreur de désinstallation aérée : séparation du motif, des précautions et de la consigne,
+  puis deux lignes vides avant l'erreur finale RouterOS.
+
 - Erreurs d'heure et d'intervalle séparées de la saisie par une ligne vide avant et après.
   Les deux lignes du message d'intervalle invalide sont désormais rouges.
 
@@ -63,15 +66,20 @@ VERSION 2026-09-18 - BY TOOR3869
 - Sous-titres sur trois lignes de 100 caractères : bordures en `#`, ligne médiane bordée
   de `###`, texte centré entre des tirets, tiret supplémentaire à gauche si nécessaire.
   Couleurs et espacement extérieur conservés ; aucun changement fonctionnel.
+  Rendu Winbox confirmé par l'utilisateur ; validation retirée du TODO et README actualisé.
 
 - Nouveau cadre final de désinstallation validé par la capture utilisateur : suppressions
   confirmées, message centré et sortie normale.
 
 - Récapitulatifs de fin d'installation, de planning et de désinstallation entièrement encadrés
   de `#` sur 100 caractères ; textes et valeurs centrés, couleurs préservées. Présentation seule.
+  Présentation commune acceptée par l'utilisateur après l'essai de désinstallation ; retrait
+  des essais visuels redondants du TODO, sans étendre les validations fonctionnelles.
 
 - README actualisé avec le périmètre réellement testé dans Winbox, les validations restantes,
   le récapitulatif du choix 2 et la récupération du verrou après Ctrl+C.
+  Conservation d'un scheduler désactivé et récapitulatif du choix 2 confirmés dans Winbox ;
+  README et TODO réconciliés avec cette validation.
 
 - Cadre final du choix 2 validé par capture utilisateur avec scheduler actif et planning
   00:00:00 / 6h ; TODO limité à la variante initialement désactivée.

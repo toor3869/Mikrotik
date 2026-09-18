@@ -59,9 +59,9 @@ L'habillage couleur distingue les titres (cyan), succès (vert), avertissements
 Les séquences ANSI sont réinitialisées après chaque message. La bannière, les cadres, les couleurs
 et les espacements ont été vérifiés progressivement dans Winbox. Les sous-titres occupent trois
 lignes de 100 caractères : bordures en `#` et texte centré entre des tirets sur la ligne médiane.
-Ce nouvel habillage des sous-titres reste à vérifier dans Winbox.
+Cet habillage des sous-titres a été validé par l'utilisateur dans Winbox.
 Les récapitulatifs finaux utilisent un cadre fermé de 100 caractères avec textes et valeurs
-centrés : rendu validé pour la désinstallation, encore à vérifier pour l'installation et le planning.
+centrés. Cette présentation commune est validée à partir du rendu de désinstallation.
 
 &nbsp;
 
@@ -84,7 +84,7 @@ La première création et le changement d'horaires ne demandent pas de confirmat
 
 Le choix **2** affiche un récapitulatif du planning et de l'état du scheduler, sans lancer de
 sauvegarde ni supprimer l'installateur. Il conserve un scheduler initialement désactivé ;
-cette variante reste à valider en pratique.
+ce comportement et son récapitulatif ont été validés dans Winbox.
 
 &nbsp;
 

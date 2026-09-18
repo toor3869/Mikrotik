@@ -436,9 +436,13 @@
                     :put "";
                     :put ("\1B[31m" . ("Desinstallation incomplete ou refusee - etape : " . $uninstallStage) . "\1B[0m");
                     :put ("\1B[31m" . ("Motif : " . $uninstallReason) . "\1B[0m");
+                    :put "";
                     :put "Aucune sauvegarde en cours n'a ete interrompue.";
                     :put "\1B[33mLes suppressions deja effectuees ne sont pas annulees.\1B[0m";
+                    :put "";
                     :put "Conservez l'installateur et relancez le choix 9 apres verification.";
+                    :put "";
+                    :put "";
                 };
                 :set toor3869CloudInstallerLock false;
                 :if ($uninstallFailed) do={ :error "Desinstallation non validee"; };

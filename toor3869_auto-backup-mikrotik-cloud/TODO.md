@@ -2,12 +2,9 @@
 
 ## À valider
 
-- [ ] Vérifier le dernier ajustement visuel : une ligne vide à l'intérieur des bordures du cadre,
-      une après OUI et les retours Cloud ; aucun cumul entre inventaire, horaires et mot de passe.
-- [ ] Vérifier les espacements des confirmations, reprises, erreurs et annulations lors des
-      essais des parcours secondaires ci-dessous.
-- [ ] Tester les saisies de mot de passe invalides : vide, non-ASCII
-      et confirmation différente ; vérifier Retour arrière, collage, expiration et Ctrl+C.
+- [ ] Refaire le collage non-ASCII : refus après Entrée, sans annulation ni fuite vers le menu.
+- [ ] Tester la confirmation différente du mot de passe ; vérifier
+      les messages et leurs espacements, Retour arrière, collage, expiration et Ctrl+C.
 - [ ] Tester les limites et saisies horaires invalides : borne 23:59:59,
       intervalle nul ou supérieur à 1d, acceptation de 1d et maintien de l'heure déjà validée.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.
@@ -16,7 +13,7 @@
 - [ ] Tester les protections du choix 9 : objets étrangers, jobs actifs, objet modifié pendant
       la confirmation et reprise après désinstallation partielle.
 - [ ] Tester la reprise par Entrée après échec réseau, droits insuffisants, création partielle
-      ou activation refusée ; vérifier conservation Cloud et absence d'activation indue.
+      ou activation refusée ; vérifier conservation Cloud, absence d'activation indue et affichage.
 - [ ] Vérifier le premier cycle planifié.
 - [ ] Tester les états partiels, doublons, objets homonymes et mise à jour sans doublon.
 - [ ] Tester le planning seul avec un scheduler initialement désactivé : préserver cet état.

@@ -6,8 +6,23 @@
 
 ## État actuel
 
+- Test non-ASCII utilisateur en échec : collage de Testé12345 interrompant la saisie avant
+  Entrée, suffixe arrivant au menu suivant. Cause probable : retour négatif/non numérique
+  assimilé à une expiration. Correction locale : mesurer l'attente avant de conclure au délai
+  expiré ; sinon marquer invalide et consommer jusqu'à Entrée. Échap n'annule plus le lecteur.
+  Refaire ce test sur Winbox ; contrôle statique seul ne prouve pas les codes renvoyés par inkey.
+
+- Mot de passe vide refusé avec message rouge « Mot de passe trop court » et ligne vide avant
+  la nouvelle saisie : validé par la capture utilisateur. TODO réduit aux autres saisies ;
+  contrôle visuel transversal intégré aux tests concernés au lieu d'une tâche en doublon.
+
+- TODO visuel réconcilié avec les essais utilisateur : contrôle nominal des cadres finaux,
+  confirmations, retours Cloud et transitions retiré. Contrôle secondaire limité aux reprises
+  après échec et aux erreurs de saisie encore non testées.
+
 - Ligne vide ajoutée après les erreurs de mot de passe invalide ou trop court pour séparer
-  la nouvelle saisie ; test statique dédié. Correction locale, non publiée.
+  la nouvelle saisie ; test statique dédié. Publiée dans 7497781 ; rendu après l'erreur
+  « Mot de passe invalide » validé par la capture utilisateur dans Winbox.
 
 - Mot de passe de 129 caractères : refus et nouvelle demande de saisie validés par la sortie
   utilisateur. Cas retiré du TODO ; limite exacte de 128 et autres saisies non déduites.

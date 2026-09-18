@@ -9,7 +9,12 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Saisie non-ASCII : une valeur négative ou non numérique reçue immédiatement ne déclenche
+  plus l'annulation. L'expiration est distinguée par le temps d'attente ; la saisie invalide
+  est consommée jusqu'à Entrée puis refusée, sans transférer la fin du collage au menu suivant.
+
 - Ligne vide après les erreurs de mot de passe invalide ou trop court, avant la nouvelle saisie.
+  Rendu après le message de mot de passe invalide confirmé par la capture utilisateur.
 
 - Annulation explicite par `0` puis Entrée pour les horaires et les deux saisies de mot de
   passe. Menus de reprise et de sortie unifiés avec `terminal ask`, sans dépendre d'Échap.
@@ -42,6 +47,12 @@ VERSION 2026-09-18 - BY TOOR3869
   sans `return 0` global ; erreurs réelles conservées. Confirmation native encore à réaliser.
 
 ### Modifié
+
+- Mot de passe vide : refus et espacement de la nouvelle saisie validés par la capture
+  utilisateur. Contrôles visuels restants intégrés aux tests fonctionnels du TODO.
+
+- TODO visuel nettoyé à partir des captures et sorties déjà validées : cadres finaux,
+  retours Cloud, confirmations et annulations ; seuls les parcours non testés restent à vérifier.
 
 - Refus d'un mot de passe de 129 caractères et reprise de la saisie validés par l'essai
   utilisateur ; cas retiré du TODO.

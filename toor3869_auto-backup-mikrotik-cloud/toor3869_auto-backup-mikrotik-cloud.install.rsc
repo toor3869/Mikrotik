@@ -89,10 +89,18 @@
             :local invalid false;
             :put $1;
             :while ($submitted = false) do={
+                :local waitStarted [/system resource get uptime];
                 :local key [/terminal inkey timeout=2m];
-                :if (([:typeof $key] != "num") || ($key < 0) || ($key = 27) || ($key = 3)) do={
-                    :return "";
+                :if (([:typeof $key] != "num") || ($key < 0)) do={
+                    # Une valeur negative peut provenir d'un caractere non ASCII colle.
+                    # Ne quitter que si le delai s'est reellement ecoule ; sinon vider
+                    # la saisie jusqu'a Entree avant de signaler le caractere invalide.
+                    :if (([/system resource get uptime] - $waitStarted) >= 2m) do={
+                        :return "";
+                    };
+                    :set key -2;
                 };
+                :if ($key = 3) do={ :return ""; };
                 :if (($key = 13) || ($key = 10)) do={
                     :set submitted true;
                 } else={

@@ -350,7 +350,7 @@ class Contracts(unittest.TestCase):
         matches = re.findall(r':local alphabet "(.*)";', self.installer)
         self.assertEqual(len(matches), 1)
         self.assertEqual(decode_ros(matches[0]), "".join(map(chr, range(32, 127))))
-        for guard in ("timeout=2m", "$key = 27", "$key = 8", "$key = 127",
+        for guard in ("timeout=2m", "$key = 3", "$key = 8", "$key = 127",
                       "[:len $value] >= 128", "[:len $value] < 8"):
             self.assertIn(guard, self.installer)
         self.assertNotRegex(self.installer, r':(?:put|log)[^\n]*\$(?:password|confirmation)')
@@ -377,6 +377,20 @@ class Contracts(unittest.TestCase):
         self.assertNotIn('on-error', pair)
         self.assertNotIn('saisie planning', pair)
         self.assertNotIn('/system', pair)
+
+    def test_non_ascii_input_does_not_cancel_or_leak_paste_to_menu(self):
+        reader = self.code.split(':local readPassword do={', 1)[1].split(':local encodePassword', 1)[0]
+        self.assertIn(':local waitStarted [/system resource get uptime];', reader)
+        self.assertIn(':if (([/system resource get uptime] - $waitStarted) >= 2m) do={', reader)
+        self.assertIn(':set key -2;', reader)
+        self.assertNotIn('$key = 27', reader)
+        invalid = reader.split(':if (($key < 32) || ($key > 126)) do={', 1)[1].split('} else={', 1)[0]
+        self.assertIn(':set invalid true;', invalid)
+        self.assertNotIn(':return', invalid)
+        self.assertNotIn(':set submitted true', invalid)
+        # L'indicateur reste pose jusqu'a la soumission, meme apres Retour arriere.
+        self.assertEqual(reader.count(':set invalid false;'), 0)
+        self.assertIn('($value = "0") && ($invalid = false)', reader)
 
     def test_exact_identities_and_no_site_configuration(self):
         self.assertIn(':local scriptName "' + NAME + '.rsc";', self.installer)

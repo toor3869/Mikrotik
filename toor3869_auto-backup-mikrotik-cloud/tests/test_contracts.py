@@ -729,7 +729,7 @@ class Contracts(unittest.TestCase):
 
     def test_final_frames_have_single_inner_spacing(self):
         lines = self.colored_installer.splitlines()
-        for title in ('Installation terminee', 'Desinstallation terminee'):
+        for title in ('Installation terminee', 'Desinstallation terminee', 'Modification terminee'):
             index = next(i for i, line in enumerate(lines) if '----- ' + title + ' -----' in line)
             start = max(i for i in range(index) if '#' * 100 in lines[i])
             end = next(i for i in range(index + 1, len(lines)) if '#' * 100 in lines[i])

@@ -2,8 +2,7 @@
 
 ## À valider
 
-- [ ] Tester les limites et saisies horaires invalides : borne 23:59:59,
-      intervalle nul ou supérieur à 1d, acceptation de 1d et maintien de l'heure déjà validée.
+- [ ] Valider le cadre final du choix 2, pour un scheduler actif puis initialement désactivé.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.
 - [ ] Tester le menu après interruption : Entrée seule quitte sans nettoyage ; 9 puis Entrée
       rejoint la désinstallation avec nouvel inventaire et confirmation OUI obligatoire.

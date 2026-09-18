@@ -843,6 +843,29 @@
                             :put "";
                             :put "\1B[33mPlanning modifie. Scheduler conserve desactive.\1B[0m";
                         };
+                        :if ($mode = "2") do={
+                            :put "";
+                            :put "";
+                            :put "\1B[36m####################################################################################################\1B[0m";
+                            :put "";
+                            :put "\1B[36m---------------------------------\1B[0m";
+                            :put "\1B[36m----- Modification terminee -----\1B[0m";
+                            :put "\1B[36m---------------------------------\1B[0m";
+                            :put "";
+                            :if ($wasDisabled) do={
+                                :put "\1B[33mScheduler        : desactive (etat conserve)\1B[0m";
+                            } else={
+                                :put "\1B[32mScheduler        : actif\1B[0m";
+                            };
+                            :put ("\1B[32m" . ("Heure de depart  : " . $startTime) . "\1B[0m");
+                            :put ("\1B[32m" . ("Intervalle       : " . $interval) . "\1B[0m");
+                            :put "";
+                            :put "Fichier d'installation conserve. Aucune sauvegarde lancee.";
+                            :put "";
+                            :put "\1B[36m####################################################################################################\1B[0m";
+                            :put "";
+                            :put "";
+                        };
                     } on-error={
                         :set failed true;
                     };

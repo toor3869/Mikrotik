@@ -6,6 +6,14 @@
 
 ## État actuel
 
+- Choix 2 : 1d accepté, scheduler actif et fin normale selon capture utilisateur ; heure saisie
+  00:00:00. Retour à l'ancien planning 00:10:00 / 6h non confirmé. Cadre final ajouté localement
+  pour ce parcours, avec état du scheduler et planning ; aucune sauvegarde ni suppression ajoutée.
+
+- Essai horaires sur d05c7f2 validé par capture utilisateur : refus de 25:00:00, acceptation
+  de 23:59:59, refus de 0s et 2d sans redemander l'heure, puis annulation 0 et sortie normales
+  sans mutation annoncée. Affichage corrigé validé ; seule l'acceptation de 1d reste à tester.
+
 - Historique Cloud déplacé dans toor3869_auto-backup-mikrotik-cloud/CHANGELOG.md ; seules
   la licence, les règles communes et la réorganisation restent dans le changelog racine.
   Utiliser désormais le changelog du module pour les corrections de l'installateur.

@@ -60,6 +60,13 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- Choix 2 : récapitulatif final encadré de lignes de 100 caractères `#`, avec heure,
+  intervalle et état actif ou désactivé conservé. Aucun test Cloud ni nettoyage supplémentaire.
+- Intervalle maximal 1d accepté lors de l'essai utilisateur et fin normale confirmée.
+
+- Horaires validés par capture utilisateur : 25:00:00 refusé, 23:59:59 accepté, 0s et 2d
+  refusés sans redemander l'heure. Espacements corrects et annulation sans mutation annoncée.
+
 - Retour arrière pendant le mot de passe validé par l'essai utilisateur, puis confirmation
   acceptée et refus de rotation sans mutation annoncée. TODO limité au test d'expiration.
 

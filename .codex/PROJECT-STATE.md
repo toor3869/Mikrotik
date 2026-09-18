@@ -6,9 +6,23 @@
 
 ## État actuel
 
+- Test expiration en échec : utilisateur resté plus de cinq minutes sans sortie. Le contrôle
+  du temps était limité aux retours négatifs/non numériques. Correction : timeout=1m et
+  contrôle temporel avant toute classification du retour, effacement de la saisie et message
+  explicite avant annulation. À revalider en natif ; si inkey ne rend jamais la main malgré
+  timeout, ce contrôle ne suffit pas. Aucun ajout de scheduler ni modification du routeur.
+
+- Retour arrière validé par l'essai utilisateur : suppression du dernier caractère puis
+  confirmation correspondante acceptée. Refus 0 à EFFACER : aucune mutation annoncée,
+  arrivée au menu d'interruption. Expiration de la saisie encore à tester.
+
 - Confirmation différente : message de refus et reprise de la première saisie validés par
-  la capture utilisateur. Ligne vide ajoutée après ce message ; rendu restant à confirmer,
-  correction locale non publiée. TODO limité aux contrôles encore nécessaires.
+  la capture utilisateur. Ligne vide publiée dans 35f6d65 puis validée dans Winbox.
+  Point retiré du TODO.
+
+- Ctrl+C testé : interruption forcée laissant le verrou actif, relance refusée. L'utilisateur
+  confirme la reprise après libération manuelle du verrou selon la procédure du README.
+  Ce résultat valide la récupération manuelle, pas une sortie propre automatique par Ctrl+C.
 
 - Test non-ASCII utilisateur en échec : collage de Testé12345 interrompant la saisie avant
   Entrée, suffixe arrivant au menu suivant. Cause probable : retour négatif/non numérique

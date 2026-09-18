@@ -9,8 +9,11 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Expiration du mot de passe : contrôle du temps écoulé avant toute classification du retour
+  clavier, y compris positif. Délai ramené à une minute d'inactivité avec message explicite.
+
 - Ligne vide ajoutée après le refus d'une confirmation différente, avant la nouvelle saisie.
-  Détection de la différence et reprise validées par la capture utilisateur.
+  Détection de la différence, reprise et espacement validés par les captures utilisateur.
 
 - Saisie non-ASCII : une valeur négative ou non numérique reçue immédiatement ne déclenche
   plus l'annulation. L'expiration est distinguée par le temps d'attente ; la saisie invalide
@@ -51,6 +54,12 @@ VERSION 2026-09-18 - BY TOOR3869
   sans `return 0` global ; erreurs réelles conservées. Confirmation native encore à réaliser.
 
 ### Modifié
+
+- Retour arrière pendant le mot de passe validé par l'essai utilisateur, puis confirmation
+  acceptée et refus de rotation sans mutation annoncée. TODO limité au test d'expiration.
+
+- Reprise après Ctrl+C confirmée par l'utilisateur : verrou conservé, relance protégée puis
+  déblocage manuel selon le README. Ne constitue pas une annulation automatique propre.
 
 - Mot de passe vide : refus et espacement de la nouvelle saisie validés par la capture
   utilisateur. Contrôles visuels restants intégrés aux tests fonctionnels du TODO.

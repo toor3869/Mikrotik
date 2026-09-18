@@ -350,7 +350,7 @@ class Contracts(unittest.TestCase):
         matches = re.findall(r':local alphabet "(.*)";', self.installer)
         self.assertEqual(len(matches), 1)
         self.assertEqual(decode_ros(matches[0]), "".join(map(chr, range(32, 127))))
-        for guard in ("timeout=2m", "$key = 3", "$key = 8", "$key = 127",
+        for guard in ("timeout=1m", "$key = 3", "$key = 8", "$key = 127",
                       "[:len $value] >= 128", "[:len $value] < 8"):
             self.assertIn(guard, self.installer)
         self.assertNotRegex(self.installer, r':(?:put|log)[^\n]*\$(?:password|confirmation)')
@@ -381,7 +381,7 @@ class Contracts(unittest.TestCase):
     def test_non_ascii_input_does_not_cancel_or_leak_paste_to_menu(self):
         reader = self.code.split(':local readPassword do={', 1)[1].split(':local encodePassword', 1)[0]
         self.assertIn(':local waitStarted [/system resource get uptime];', reader)
-        self.assertIn(':if (([/system resource get uptime] - $waitStarted) >= 2m) do={', reader)
+        self.assertIn(':if (([/system resource get uptime] - $waitStarted) >= 1m) do={', reader)
         self.assertIn(':set key -2;', reader)
         self.assertNotIn('$key = 27', reader)
         invalid = reader.split(':if (($key < 32) || ($key > 126)) do={', 1)[1].split('} else={', 1)[0]
@@ -391,6 +391,19 @@ class Contracts(unittest.TestCase):
         # L'indicateur reste pose jusqu'a la soumission, meme apres Retour arriere.
         self.assertEqual(reader.count(':set invalid false;'), 0)
         self.assertIn('($value = "0") && ($invalid = false)', reader)
+
+    def test_password_timeout_checked_before_key_classification(self):
+        reader = self.code.split(':local readPassword do={', 1)[1].split(':local encodePassword', 1)[0]
+        wait = reader.index(':local key [/terminal inkey timeout=1m];')
+        elapsed = reader.index(':if (([/system resource get uptime] - $waitStarted) >= 1m)')
+        classify = reader.index(':if (([:typeof $key] != "num") || ($key < 0))')
+        self.assertLess(wait, elapsed)
+        self.assertLess(elapsed, classify)
+        expiry = reader[elapsed:classify]
+        self.assertIn(':set value "";', expiry)
+        self.assertIn(':return "";', expiry)
+        self.assertIn('Saisie expiree apres une minute sans touche.', expiry)
+        self.assertNotIn('$key', expiry)
 
     def test_exact_identities_and_no_site_configuration(self):
         self.assertIn(':local scriptName "' + NAME + '.rsc";', self.installer)

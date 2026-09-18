@@ -90,14 +90,18 @@
             :put $1;
             :while ($submitted = false) do={
                 :local waitStarted [/system resource get uptime];
-                :local key [/terminal inkey timeout=2m];
+                :local key [/terminal inkey timeout=1m];
+                # Verifier le delai independamment du code renvoye (y compris 65535).
+                :if (([/system resource get uptime] - $waitStarted) >= 1m) do={
+                    :set value "";
+                    :put "";
+                    :put "\1B[33mSaisie expiree apres une minute sans touche.\1B[0m";
+                    :put "";
+                    :return "";
+                };
                 :if (([:typeof $key] != "num") || ($key < 0)) do={
                     # Une valeur negative peut provenir d'un caractere non ASCII colle.
-                    # Ne quitter que si le delai s'est reellement ecoule ; sinon vider
-                    # la saisie jusqu'a Entree avant de signaler le caractere invalide.
-                    :if (([/system resource get uptime] - $waitStarted) >= 2m) do={
-                        :return "";
-                    };
+                    # Consommer la saisie jusqu'a Entree avant de signaler l'erreur.
                     :set key -2;
                 };
                 :if ($key = 3) do={ :return ""; };
@@ -609,6 +613,7 @@
                                 :put "";
                                 :put "Utilisez entre 8 et 128 caracteres ASCII imprimables.";
                                 :put "La saisie est invisible. Tapez 0 puis Entree pour annuler.";
+                                :put "La saisie expire apres une minute sans touche.";
                                 :put "";
                                 :local passwordsMatch false;
                                 :while ($passwordsMatch = false) do={

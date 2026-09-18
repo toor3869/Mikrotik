@@ -136,7 +136,7 @@ Un refus de remplacement rejoint aussi ce menu ; un refus de désinstallation qu
 
 Entrée relance un inventaire et une tentative ; **0 puis Entrée** rejoint le menu d'interruption.
 Ces menus attendent une réponse explicite ; la saisie invisible du mot de passe conserve son
-délai de deux minutes sans touche. Aucune annulation ne supprime automatiquement des éléments.
+délai d'une minute sans touche. Aucune annulation ne supprime automatiquement des éléments.
 
 Les paramètres validés sont conservés. Une sauvegarde déjà vérifiée dans la session est
 réutilisée si son nom, son état, sa date et sa taille concordent encore. Sinon, les confirmations

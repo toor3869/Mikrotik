@@ -675,7 +675,8 @@ class Contracts(unittest.TestCase):
 
     def test_password_error_separated_from_retry_prompt(self):
         lines = self.colored_installer.splitlines()
-        for message in ('Mot de passe invalide.', 'Mot de passe trop court.'):
+        for message in ('Mot de passe invalide.', 'Mot de passe trop court.',
+                        'Les mots de passe ne correspondent pas.'):
             index = next(i for i, line in enumerate(lines) if message in line)
             self.assertEqual(lines[index + 1].strip(), ':put "";')
 

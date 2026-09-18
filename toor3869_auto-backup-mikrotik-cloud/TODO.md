@@ -2,9 +2,8 @@
 
 ## À valider
 
-- [ ] Refaire le collage non-ASCII : refus après Entrée, sans annulation ni fuite vers le menu.
-- [ ] Tester la confirmation différente du mot de passe ; vérifier
-      les messages et leurs espacements, Retour arrière, collage, expiration et Ctrl+C.
+- [ ] Vérifier la ligne vide après l'erreur de confirmation différente du mot de passe.
+- [ ] Tester Retour arrière, expiration et Ctrl+C pendant la saisie du mot de passe.
 - [ ] Tester les limites et saisies horaires invalides : borne 23:59:59,
       intervalle nul ou supérieur à 1d, acceptation de 1d et maintien de l'heure déjà validée.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.

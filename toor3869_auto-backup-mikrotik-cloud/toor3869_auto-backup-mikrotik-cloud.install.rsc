@@ -630,6 +630,7 @@
                                         :set password "";
                                         :put "";
                                         :put "\1B[31mLes mots de passe ne correspondent pas. Recommencez la saisie.\1B[0m";
+                                        :put "";
                                     };
                                     :set confirmation "";
                                 };

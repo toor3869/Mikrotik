@@ -9,9 +9,13 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Corrigé
 
+- Ligne vide ajoutée après le refus d'une confirmation différente, avant la nouvelle saisie.
+  Détection de la différence et reprise validées par la capture utilisateur.
+
 - Saisie non-ASCII : une valeur négative ou non numérique reçue immédiatement ne déclenche
   plus l'annulation. L'expiration est distinguée par le temps d'attente ; la saisie invalide
   est consommée jusqu'à Entrée puis refusée, sans transférer la fin du collage au menu suivant.
+  Comportement confirmé dans Winbox par l'essai utilisateur avec un caractère accentué.
 
 - Ligne vide après les erreurs de mot de passe invalide ou trop court, avant la nouvelle saisie.
   Rendu après le message de mot de passe invalide confirmé par la capture utilisateur.

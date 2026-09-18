@@ -6,11 +6,16 @@
 
 ## État actuel
 
+- Confirmation différente : message de refus et reprise de la première saisie validés par
+  la capture utilisateur. Ligne vide ajoutée après ce message ; rendu restant à confirmer,
+  correction locale non publiée. TODO limité aux contrôles encore nécessaires.
+
 - Test non-ASCII utilisateur en échec : collage de Testé12345 interrompant la saisie avant
   Entrée, suffixe arrivant au menu suivant. Cause probable : retour négatif/non numérique
   assimilé à une expiration. Correction locale : mesurer l'attente avant de conclure au délai
   expiré ; sinon marquer invalide et consommer jusqu'à Entrée. Échap n'annule plus le lecteur.
-  Refaire ce test sur Winbox ; contrôle statique seul ne prouve pas les codes renvoyés par inkey.
+  Version 387ffd6 : collage Testé12345 validé par l'utilisateur et sa capture Winbox,
+  refus puis nouvelle saisie sans bascule de menu. Codes exacts d'inkey non mesurés.
 
 - Mot de passe vide refusé avec message rouge « Mot de passe trop court » et ligne vide avant
   la nouvelle saisie : validé par la capture utilisateur. TODO réduit aux autres saisies ;

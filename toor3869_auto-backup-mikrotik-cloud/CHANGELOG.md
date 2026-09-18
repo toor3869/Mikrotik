@@ -60,6 +60,12 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- README actualisé avec le périmètre réellement testé dans Winbox, les validations restantes,
+  le récapitulatif du choix 2 et la récupération du verrou après Ctrl+C.
+
+- Cadre final du choix 2 validé par capture utilisateur avec scheduler actif et planning
+  00:00:00 / 6h ; TODO limité à la variante initialement désactivée.
+
 - Choix 2 : récapitulatif final encadré de lignes de 100 caractères `#`, avec heure,
   intervalle et état actif ou désactivé conservé. Aucun test Cloud ni nettoyage supplémentaire.
 - Intervalle maximal 1d accepté lors de l'essai utilisateur et fin normale confirmée.

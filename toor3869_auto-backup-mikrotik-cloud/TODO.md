@@ -2,7 +2,6 @@
 
 ## À valider
 
-- [ ] Valider le cadre final du choix 2, pour un scheduler actif puis initialement désactivé.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.
 - [ ] Tester le menu après interruption : Entrée seule quitte sans nettoyage ; 9 puis Entrée
       rejoint la désinstallation avec nouvel inventaire et confirmation OUI obligatoire.
@@ -12,7 +11,8 @@
       ou activation refusée ; vérifier conservation Cloud, absence d'activation indue et affichage.
 - [ ] Vérifier le premier cycle planifié.
 - [ ] Tester les états partiels, doublons, objets homonymes et mise à jour sans doublon.
-- [ ] Tester le planning seul avec un scheduler initialement désactivé : préserver cet état.
+- [ ] Tester le planning seul avec un scheduler initialement désactivé : préserver cet état
+      et vérifier le récapitulatif final.
 - [ ] Vérifier la restauration d'une sauvegarde de test et son ouverture avec le mot de passe saisi.
 - [ ] Vérifier la conservation du fichier d'installation après échec ou annulation.
 - [ ] Tester le second essai de nettoyage : succès, fichier déjà absent et échec persistant,
@@ -20,4 +20,4 @@
 
 ## À faire
 
-- [ ] Finaliser le README après validation des essais ; version publiée encore expérimentale.
+- [ ] Réévaluer le statut expérimental dans le README après les validations restantes.

@@ -7,8 +7,15 @@
 Un installateur interactif pour créer une sauvegarde chiffrée et programmer son renouvellement.
 
 > **Version expérimentale — essais uniquement.**
-> Cette deuxième version est prête pour les essais, mais reste à valider sur RouterOS.
+> Installation, planning, changement de mot de passe et désinstallation ont été testés dans Winbox
+> sur un RB2011 sous RouterOS 7.24.4. La validation complète, notamment la restauration, reste à finir.
 > La commande de lancement télécharge la version actuellement publiée sur `main`.
+
+Les contrôles de saisie testés comprennent les mots de passe vide, trop court, de 129 caractères,
+non ASCII, les confirmations différentes, Retour arrière, l'annulation par `0` et l'expiration
+après une minute sur les deux saisies. Le refus des horaires invalides et la limite `1d` ont
+également été vérifiés. Le détail des essais restants figure dans le [TODO](TODO.md),
+et l'historique du module dans le [changelog](CHANGELOG.md).
 
 - [01 Lancement](#01-lancement)
 - [02 Menu](#02-menu)
@@ -26,7 +33,8 @@ Un installateur interactif pour créer une sauvegarde chiffrée et programmer so
 
 Prévoir un compte administrateur, RouterOS 7 avec `terminal ask` et `terminal inkey`,
 ainsi qu'une heure et des certificats de confiance permettant la connexion HTTPS.
-Les permissions exactes et la compatibilité restent à valider sur la cible de test.
+Les essais réalisés ne déterminent pas les droits minimaux et ne garantissent pas la compatibilité
+avec toutes les versions de RouterOS ou tous les terminaux.
 
 Copier le bloc entier :
 
@@ -48,7 +56,8 @@ Suivre ensuite les questions affichées dans le terminal.
 
 L'habillage couleur distingue les titres (cyan), succès (vert), avertissements
 (jaune) et erreurs (rouge). Les explications et saisies gardent le style normal.
-Les séquences ANSI sont réinitialisées après chaque message ; leur rendu reste à tester dans Winbox.
+Les séquences ANSI sont réinitialisées après chaque message. La bannière, les cadres, les couleurs
+et les espacements des parcours testés ont été validés dans Winbox.
 
 &nbsp;
 
@@ -68,6 +77,10 @@ le scheduler, puis exécute un test réel avant d'activer l'automatisation.
 Sur une installation existante, le choix 1 met à jour les éléments en place et remplace la
 sauvegarde après confirmation `REMPLACER`, sans suppression préalable.
 La première création et le changement d'horaires ne demandent pas de confirmation `OUI`.
+
+Le choix **2** affiche un récapitulatif du planning et de l'état du scheduler, sans lancer de
+sauvegarde ni supprimer l'installateur. Il conserve un scheduler initialement désactivé ;
+cette variante reste à valider en pratique.
 
 &nbsp;
 
@@ -159,6 +172,8 @@ Le verrou couvre toute la session, menus et nettoyage compris, mais reste lié a
 utilisateur : il ne garantit pas l'exclusion entre comptes.
 
 **Avant de le libérer, vérifier qu'aucune installation n'est encore en cours.**
+Ctrl+C peut arrêter l'import avant la libération du verrou. Ce cas et la reprise manuelle
+ci-dessous ont été observés pendant les essais ; préférer `0` puis Entrée pour une sortie normale.
 Dans le terminal RouterOS du même utilisateur :
 
 ```routeros

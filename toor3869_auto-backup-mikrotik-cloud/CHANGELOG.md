@@ -60,6 +60,9 @@ VERSION 2026-09-18 - BY TOOR3869
 
 ### Modifié
 
+- Récapitulatifs de fin d'installation, de planning et de désinstallation entièrement encadrés
+  de `#` sur 100 caractères ; textes et valeurs centrés, couleurs préservées. Présentation seule.
+
 - README actualisé avec le périmètre réellement testé dans Winbox, les validations restantes,
   le récapitulatif du choix 2 et la récupération du verrou après Ctrl+C.
 

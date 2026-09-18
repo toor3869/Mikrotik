@@ -79,6 +79,9 @@ class Contracts(unittest.TestCase):
         self.installer = re.sub(r'\\1B\[(?:0|31|32|33|36)m', '', self.colored_installer)
         self.installer = re.sub(r':put \("" \. (\([^\n]+\)) \. ""\);',
                                 r':put \1;', self.installer)
+        # Le centrage des cadres est controle separement sur la source brute.
+        self.installer = re.sub(r':put \[\$frameLine (.+) "(?:0|32|33|36)"\];',
+                                r':put \1;', self.installer)
         # Les contrats fonctionnels ignorent le double espacement visuel.
         self.installer = re.sub(r'(?m)^( *:put "";\n)\1', r'\1', self.installer)
         # Le cadre des sous-titres est teste separement sur le texte brut.
@@ -160,7 +163,7 @@ class Contracts(unittest.TestCase):
         colored = [line for line in self.colored_installer.splitlines() if r'\1B[' in line]
         self.assertGreater(len(colored), 50)
         for line in colored:
-            self.assertIn(':put ', line)
+            self.assertTrue(':put ' in line or ':set result ' in line)
             self.assertEqual(re.findall(r'\\1B\[(\d+)m', line)[-1], '0')
             self.assertEqual(len(re.findall(r'\\1B\[0m', line)), 1)
             self.assertNotIn('/terminal ask', line)
@@ -170,10 +173,10 @@ class Contracts(unittest.TestCase):
         self.assertNotIn('\x1b', self.colored_installer)
 
     def test_console_palette_semantics(self):
-        for label, variable in (("Heure de depart  : ", "summaryStartTime"),
-                                ("Intervalle       : ", "summaryInterval")):
-            self.assertIn(':put ("\\1B[32m" . ("' + label + '" . $' + variable
-                          + ') . "\\1B[0m");', self.colored_installer)
+        for label, variable in (("Heure de depart : ", "summaryStartTime"),
+                                ("Intervalle : ", "summaryInterval")):
+            self.assertIn(':put [$frameLine ("' + label + '" . $' + variable
+                          + ') "32"];', self.colored_installer)
         examples = {
             '36': '----- Choix de l\'operation -----',
             '32': 'Test termine avec succes.',
@@ -226,7 +229,7 @@ class Contracts(unittest.TestCase):
         self.assertIn('($cleanupDone = false) && ($cleanupAttempt < 2)', self.cleanup)
         self.assertIn('[/file find where name=$installerFile]', self.cleanup)
         self.assertLess(code.index(':if ($cleaned = false)'),
-                        code.index('----- Desinstallation terminee -----'))
+                        code.index('Desinstallation terminee'))
         self.assertIn('Les suppressions deja effectuees ne sont pas annulees.', code)
         self.assertIn(':set toor3869CloudInstallerLock false;', code[positions[4]:])
 
@@ -234,7 +237,7 @@ class Contracts(unittest.TestCase):
         code = self.uninstall
         start = code.index(':if ($cleaned = false) do={ :error "Nettoyage incomplet"; };')
         end = code.index('} on-error={', start)
-        lines = ['', '#' * 100, '', '----- Desinstallation terminee -----', '',
+        lines = ['', '#' * 100, '', 'Desinstallation terminee', '',
                  "Script, scheduler, sauvegarde Cloud et fichier d'installation supprimes.",
                  '', '#' * 100, '']
         self.assertEqual(re.findall(r':put "(.*)";', code[start:end]), lines)
@@ -730,20 +733,50 @@ class Contracts(unittest.TestCase):
     def test_final_frames_have_single_inner_spacing(self):
         lines = self.colored_installer.splitlines()
         for title in ('Installation terminee', 'Desinstallation terminee', 'Modification terminee'):
-            index = next(i for i, line in enumerate(lines) if '----- ' + title + ' -----' in line)
+            index = next(i for i, line in enumerate(lines) if '$frameLine "' + title + '"' in line)
             start = max(i for i in range(index) if '#' * 100 in lines[i])
             end = next(i for i in range(index + 1, len(lines)) if '#' * 100 in lines[i])
             inner = [line.strip() for line in lines[start + 1:end]]
-            self.assertEqual(inner[0], ':put "";')
-            self.assertEqual(inner[-1], ':put "";')
-            self.assertFalse(any(a == b == ':put "";' for a, b in zip(inner, inner[1:])))
+            empty = ':put [$frameLine "" "0"];'
+            self.assertEqual(inner[0], empty)
+            self.assertEqual(inner[-1], empty)
+            self.assertFalse(any(a == b == empty for a, b in zip(inner, inner[1:])))
+            self.assertTrue(all('$frameLine' in line for line in inner if line.startswith(':put')))
             self.assertEqual([line.strip() for line in lines[start - 2:start]], [':put "";'] * 2)
             self.assertEqual([line.strip() for line in lines[end + 1:end + 3]], [':put "";'] * 2)
+
+    def test_frame_centering_algorithm_and_boundaries(self):
+        helper = self.colored_installer.split(':local frameLine do={', 1)[1].split(':local readPassword', 1)[0]
+        self.assertIn(':local text [:pick $remaining 0 90];', helper)
+        self.assertIn(':set remaining [:pick $remaining 90 [:len $remaining]];', helper)
+        self.assertIn(':set left (" " . $left);', helper)
+        self.assertIn(':set right ($right . " ");', helper)
+        self.assertEqual(helper.count('([:len $left] + [:len $text] + [:len $right]) < 90'), 2)
+        self.assertIn(r'"\1B[36m#####" . $left . "\1B[" . $color . "m" . $text . "\1B[36m" . $right . "#####\1B[0m"', helper)
+        # Modele de l'algorithme de remplissage ; ne remplace pas un essai RouterOS.
+        for size in range(91):
+            text = 'x' * size
+            left = right = ''
+            while len(left + text + right) < 90:
+                left = ' ' + left
+                if len(left + text + right) < 90:
+                    right += ' '
+            self.assertEqual(len('#####' + left + text + right + '#####'), 100)
+            self.assertEqual(len(left), (90 - size + 1) // 2)
+            self.assertEqual(len(right), (90 - size) // 2)
+
+    def test_frame_line_only_receives_public_summary_values(self):
+        calls = [line for line in self.colored_installer.splitlines() if ':put [$frameLine' in line]
+        self.assertGreater(len(calls), 15)
+        for call in calls:
+            self.assertNotRegex(call, r'\$(?:password|confirmation|installedSource|runtimeSource)')
+        for variable in ('startTime', 'interval', 'summaryStartTime', 'summaryInterval'):
+            self.assertTrue(any('$' + variable + ')' in line for line in calls))
 
     def test_final_summary_after_successful_cleanup(self):
         code = self.code
         gate = code.index(':if (($failed = false) && ($runtimeValidated = true))')
-        title = code.index(':put "----- Installation terminee -----";')
+        title = code.index(':put "Installation terminee";')
         self.assertLess(gate, title)
         self.assertLess(code.index(':error "Suppression non confirmee";'), title)
         self.assertLess(title, code.index(':put "----- Nettoyage incomplet -----'))
@@ -752,11 +785,11 @@ class Contracts(unittest.TestCase):
         self.assertIn(':set summaryStartTime $startTime;', code[:gate])
         self.assertIn(':set summaryInterval $interval;', code[:gate])
         summary = code[title:]
-        for line in ('Sauvegarde Cloud : verifiee', 'Test du script   : reussi',
-                     'Scheduler        : actif'):
+        for line in ('Sauvegarde Cloud : verifiee', 'Test du script : reussi',
+                     'Scheduler : actif'):
             self.assertIn(':put "' + line + '";', summary)
-        self.assertIn(':put ("Heure de depart  : " . $summaryStartTime);', summary)
-        self.assertIn(':put ("Intervalle       : " . $summaryInterval);', summary)
+        self.assertIn(':put ("Heure de depart : " . $summaryStartTime);', summary)
+        self.assertIn(':put ("Intervalle : " . $summaryInterval);', summary)
         border = ':put "' + '#' * 100 + '";'
         self.assertEqual(code[gate:title].count(border), 1)
         self.assertEqual(summary.count(border), 1)

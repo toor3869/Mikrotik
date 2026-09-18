@@ -11,8 +11,10 @@
   distribué ; il embarque la source du script permanent. Aucun secret ni paramètre de site.
 - Dernier code publié : 123e4b22e8994a67bdb8ef4a76579d26635c46d1 sur main.
   Aucun workflow de déploiement ; exécution manuelle depuis le README.
-- 52 tests statiques réussis lors de la dernière publication. Ils ne remplacent pas RouterOS.
-- Documentation actualisée localement après les derniers essais, non encore publiée.
+- 54 tests statiques réussis sur la préparation actuelle. Ils ne remplacent pas RouterOS.
+- Documentation de reprise publiée dans 14b8ba3. Nouvelle modification locale non publiée :
+  trois récapitulatifs finaux entièrement fermés en # et centrés, valeurs variables comprises.
+  54 tests statiques ; rendu Winbox restant à valider. Aucun changement des opérations Cloud.
   Le statut reste expérimental : restauration, cycle planifié et cas d'incident non validés.
 - Dernier état fourni par l'utilisateur : scheduler actif, heure 00:00:00 et intervalle 6h.
   Ce constat vient de la sortie du choix 2, pas d'une nouvelle interrogation MCP.

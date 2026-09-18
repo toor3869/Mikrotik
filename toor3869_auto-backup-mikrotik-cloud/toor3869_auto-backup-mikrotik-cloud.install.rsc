@@ -81,6 +81,26 @@
         "####################################################################################################\r\n" . \
         "\r\n" \
     );
+    :local frameLine do={
+        :local remaining $1;
+        :local color $2;
+        :local result "";
+        :while (true) do={
+            :local text [:pick $remaining 0 90];
+            :set remaining [:pick $remaining 90 [:len $remaining]];
+            :local left "";
+            :local right "";
+            :while (([:len $left] + [:len $text] + [:len $right]) < 90) do={
+                :set left (" " . $left);
+                :if (([:len $left] + [:len $text] + [:len $right]) < 90) do={
+                    :set right ($right . " ");
+                };
+            };
+            :set result ($result . "\1B[36m#####" . $left . "\1B[" . $color . "m" . $text . "\1B[36m" . $right . "#####\1B[0m");
+            :if ([:len $remaining] = 0) do={ :return $result; };
+            :set result ($result . "\r\n");
+        };
+    };
     :local readPassword do={
         :local alphabet " !\"#\$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_\60abcdefghijklmnopqrstuvwxyz{|}~";
         :while (true) do={
@@ -401,13 +421,11 @@
                         :put "";
                         :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
-                        :put "";
-                        :put "\1B[36m------------------------------------\1B[0m";
-                        :put "\1B[36m----- Desinstallation terminee -----\1B[0m";
-                        :put "\1B[36m------------------------------------\1B[0m";
-                        :put "";
-                        :put "\1B[32mScript, scheduler, sauvegarde Cloud et fichier d'installation supprimes.\1B[0m";
-                        :put "";
+                        :put [$frameLine "" "0"];
+                        :put [$frameLine "Desinstallation terminee" "36"];
+                        :put [$frameLine "" "0"];
+                        :put [$frameLine "Script, scheduler, sauvegarde Cloud et fichier d'installation supprimes." "32"];
+                        :put [$frameLine "" "0"];
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";
                         :put "";
@@ -847,21 +865,20 @@
                             :put "";
                             :put "";
                             :put "\1B[36m####################################################################################################\1B[0m";
-                            :put "";
-                            :put "\1B[36m---------------------------------\1B[0m";
-                            :put "\1B[36m----- Modification terminee -----\1B[0m";
-                            :put "\1B[36m---------------------------------\1B[0m";
-                            :put "";
+                            :put [$frameLine "" "0"];
+                            :put [$frameLine "Modification terminee" "36"];
+                            :put [$frameLine "" "0"];
                             :if ($wasDisabled) do={
-                                :put "\1B[33mScheduler        : desactive (etat conserve)\1B[0m";
+                                :put [$frameLine "Scheduler : desactive (etat conserve)" "33"];
                             } else={
-                                :put "\1B[32mScheduler        : actif\1B[0m";
+                                :put [$frameLine "Scheduler : actif" "32"];
                             };
-                            :put ("\1B[32m" . ("Heure de depart  : " . $startTime) . "\1B[0m");
-                            :put ("\1B[32m" . ("Intervalle       : " . $interval) . "\1B[0m");
-                            :put "";
-                            :put "Fichier d'installation conserve. Aucune sauvegarde lancee.";
-                            :put "";
+                            :put [$frameLine ("Heure de depart : " . $startTime) "32"];
+                            :put [$frameLine ("Intervalle : " . $interval) "32"];
+                            :put [$frameLine "" "0"];
+                            :put [$frameLine "Fichier d'installation conserve." "0"];
+                            :put [$frameLine "Aucune sauvegarde lancee." "0"];
+                            :put [$frameLine "" "0"];
                             :put "\1B[36m####################################################################################################\1B[0m";
                             :put "";
                             :put "";
@@ -968,19 +985,17 @@
                         :put "";
                         :put "";
                         :put "\1B[36m####################################################################################################\1B[0m";
-                        :put "";
-                        :put "\1B[36m---------------------------------\1B[0m";
-                        :put "\1B[36m----- Installation terminee -----\1B[0m";
-                        :put "\1B[36m---------------------------------\1B[0m";
-                        :put "";
-                        :put "\1B[32mSauvegarde Cloud : verifiee\1B[0m";
-                        :put "\1B[32mTest du script   : reussi\1B[0m";
-                        :put "\1B[32mScheduler        : actif\1B[0m";
-                        :put ("\1B[32m" . ("Heure de depart  : " . $summaryStartTime) . "\1B[0m");
-                        :put ("\1B[32m" . ("Intervalle       : " . $summaryInterval) . "\1B[0m");
-                        :put "";
-                        :put "\1B[33mConservez votre mot de passe pour pouvoir restaurer la sauvegarde.\1B[0m";
-                        :put "";
+                        :put [$frameLine "" "0"];
+                        :put [$frameLine "Installation terminee" "36"];
+                        :put [$frameLine "" "0"];
+                        :put [$frameLine "Sauvegarde Cloud : verifiee" "32"];
+                        :put [$frameLine "Test du script : reussi" "32"];
+                        :put [$frameLine "Scheduler : actif" "32"];
+                        :put [$frameLine ("Heure de depart : " . $summaryStartTime) "32"];
+                        :put [$frameLine ("Intervalle : " . $summaryInterval) "32"];
+                        :put [$frameLine "" "0"];
+                        :put [$frameLine "Conservez votre mot de passe pour pouvoir restaurer la sauvegarde." "33"];
+                        :put [$frameLine "" "0"];
                         :put "\1B[36m####################################################################################################\1B[0m";
                         :put "";
                         :put "";

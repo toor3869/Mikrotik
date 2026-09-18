@@ -90,8 +90,13 @@ ftp \
 - Une relecture API ne suffit pas à certifier le rendu visuel de l'éditeur Winbox.
 - Pour l'affichage de l'installateur : une ligne vide entre les parties d'une étape, deux entre
   les étapes. Ne pas cumuler les séparateurs de fin et de début de deux étapes successives.
-  Dans les cadres finaux, conserver une seule ligne vide près des bordures et entre paragraphes,
-  deux à l'extérieur. Tester les vrais `:put` avant toute normalisation du texte par les tests.
+  Dans les trois récapitulatifs finaux (installation, planning, désinstallation), fermer le cadre
+  de 100 caractères avec cinq `#` à gauche et à droite de chaque ligne intérieure. Centrer les
+  textes et les valeurs variables sur 90 caractères, espace supplémentaire à gauche si impair.
+  Les lignes vides intérieures restent bordées ; conserver deux lignes vides hors du cadre.
+  Bordures et titre cyan, résultats verts, avertissements jaunes, informations normales.
+  Les cadres des étapes et menus restent inchangés. Tester les vrais affichages avant toute
+  normalisation du texte par les tests.
 - Encadrer chaque sous-titre console par deux lignes de tirets, immédiatement au-dessus et
   au-dessous, sans ligne vide dans ce cadre. Leur longueur égale celle du titre `----- Texte -----`
   et leur couleur est identique au titre. Ne pas remplacer ce cadre par une ligne isolée.

@@ -57,7 +57,9 @@ Suivre ensuite les questions affichées dans le terminal.
 L'habillage couleur distingue les titres (cyan), succès (vert), avertissements
 (jaune) et erreurs (rouge). Les explications et saisies gardent le style normal.
 Les séquences ANSI sont réinitialisées après chaque message. La bannière, les cadres, les couleurs
-et les espacements des parcours testés ont été validés dans Winbox.
+et les espacements des parcours testés ont été validés dans Winbox. Les trois récapitulatifs finaux
+utilisent désormais un cadre fermé de 100 caractères avec textes et valeurs centrés ; ce dernier
+ajustement reste à vérifier visuellement dans Winbox.
 
 &nbsp;
 

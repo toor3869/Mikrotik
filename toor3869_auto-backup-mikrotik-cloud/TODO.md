@@ -2,6 +2,7 @@
 
 ## À valider
 
+- [ ] Valider les cadres finaux fermés et centrés : installation, planning et désinstallation.
 - [ ] Tester le verrou pendant les menus et les lancements concurrents, y compris entre comptes.
 - [ ] Tester le menu après interruption : Entrée seule quitte sans nettoyage ; 9 puis Entrée
       rejoint la désinstallation avec nouvel inventaire et confirmation OUI obligatoire.
